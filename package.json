@@ -1,0 +1,11 @@
+{
+  "name": "helios",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "frontend-start": "npm run start --prefix ./frontend/helios-dashboard",
+    "frontend-build": "npm run build --prefix ./frontend/helios-dashboard",
+    "functions-start": "npm run serve --prefix ./functions",
+    "functions-build": "npm run deploy --prefix ./functions"
+  }
+}
