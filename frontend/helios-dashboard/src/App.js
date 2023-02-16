@@ -1,34 +1,34 @@
-import * as React from 'react';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import ProTip from './ProTip';
-import Typography from '@mui/material/Typography';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Admin from "./routes/Admin";
+import AdminGuard from "./guards/AdminGuard";
+import Dashboard from "./routes/Dashboard";
+import Login from "./routes/Login";
 
 export default function App() {
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Create React App example
-        </Typography>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
+    <Router>
+      <Routes>
+        <Route element={<AdminGuard expectedAuth={false} />}>
+          {/* React-router dropped support for Regex */}
+          <Route path="/auth/log-in" element={<Login />} />
+          <Route path="/auth/create-account" element={<Login />} />
+          <Route path="/auth/reset-password" element={<Login />} />
+          <Route path="/auth" element={<Navigate to="/auth/login" />} />
+        </Route>
+
+        <Route element={<AdminGuard expectedAuth={true} />}>
+          <Route path="/admin" element={<Admin />} />
+        </Route>
+
+        <Route path="/" element={<Dashboard />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 }
