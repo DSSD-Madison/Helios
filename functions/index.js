@@ -11,7 +11,6 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
   try {
     const fileBucket = object.bucket;
     const filePath = object.name;
-    const docFileRef = solarArraysRef.doc();
 
     if (!filePath.endsWith(".csv")) {
       console.log(`File ${filePath} is not in CSV format, skipping...`);
@@ -23,7 +22,27 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
     const file = bucket.file(filePath);
     const csvStream = csv();
 
-    csvStream.on("data", async (data) => {
+    // Determine the collection name based on the file path.
+    const collectionName =
+      filePath.toLowerCase().includes("gordon") ||
+      filePath.toLowerCase().includes("arboretum")
+        ? filePath.slice(0, filePath.lastIndexOf(".csv"))
+        : null;
+
+    // If the file is not in the database, log an error and exit early.
+    if (!collectionName) {
+      console.log("File not in the database.");
+      return false;
+    }
+
+    // Set the file name in the database.
+    const docFileRef = solarArraysRef.doc(collectionName);
+    const fileName = { Name: collectionName };
+    await docFileRef.set(fileName);
+
+    const yearData = {};
+
+    csvStream.on("data", (data) => {
       // Find the column headers in the current row that contain the date and solar output values.
       const dateKey = Object.keys(data).find((key) => /date/i.test(key));
       const solarOutputValueKey = Object.keys(data).find((key) =>
@@ -36,71 +55,52 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
         return;
       }
 
-      // Extract data from the row and convert date to year.
-      const date = data[dateKey].replace(/\//g, "-");
-      const solarOutputValue = data[solarOutputValueKey];
-      const year = new Date(date).getFullYear().toString();
-
-      // Determine the collection name based on the file path.
-      const collectionName =
-        filePath.toLowerCase().includes("gordon") ||
-        filePath.toLowerCase().includes("arboretum")
-          ? filePath.slice(0, filePath.lastIndexOf(".csv"))
-          : null;
-
-      // If the file is not in the database, log an error and exit early.
-      if (!collectionName) {
-        console.log("File not in the database.");
-        return false;
+      // Extract date from the row and convert solar output value to an integer if possible.
+      const solarOutputValue = parseInt(data[solarOutputValueKey], 10);
+      if (isNaN(solarOutputValue)) {
+        console.log("Skipping row - invalid solar output value.");
+        return;
       }
 
-      // Set the file name in the database.
-      const fileName = { Name: collectionName };
-      await docFileRef.set(fileName);
-
-      // Get the subcollection for this year's document.
-      const outputCollectionRef = docFileRef.collection("output");
+      const date = data[dateKey].replace(/\//g, "-");
+      const year = new Date(date).getFullYear().toString();
 
       // Parse the date and format the timestamp.
-      const timestamp = admin.firestore.Timestamp.fromMillis(
-        Date.parse(date)
-      ).toDate();
+      const timestampMillis = Date.parse(date);
+      if (isNaN(timestampMillis)) {
+        console.log(`Skipping row - invalid date: ${date}`);
+        return;
+      }
+
+      const timestamp =
+        admin.firestore.Timestamp.fromMillis(timestampMillis).toDate();
       const formattedTimestamp = moment(timestamp).format(
         "YYYY-MM-DD HH:mm:ss"
       );
 
-      // Query the output collection for documents with the same year.
-      const snapshot = await outputCollectionRef
-        .where("year", "==", year)
-        .get();
+      // Add the solar output data to the yearData object.
+      if (!yearData.hasOwnProperty(year)) {
+        yearData[year] = {};
+      }
 
-      // If the query returns an empty snapshot, create a new document for the year.
-      // Otherwise, use the first document in the snapshot.
-      const currentDocRef = snapshot.empty
-        ? outputCollectionRef.doc(year)
-        : snapshot.docs[0].ref;
-
-      // Create a batch object to batch the write operations.
-      const batch = admin.firestore().batch();
-
-      // Add the write operations to the batch.
-      batch.set(
-        currentDocRef,
-        {
-          Output: {
-            [formattedTimestamp]: solarOutputValue,
-          },
-          year: year,
-        },
-        { merge: true }
-      );
-
-      // Commit the batch to the database.
-      await batch.commit();
+      yearData[year][formattedTimestamp] = solarOutputValue;
     });
 
-    csvStream.on("end", () => {
-      console.log("CSV parsing ended.");
+    csvStream.on("end", async () => {
+      // Write the solar output data to the database.
+      const outputCollectionRef = docFileRef.collection("output");
+      const batch = admin.firestore().batch();
+      for (const year in yearData) {
+        const yearDocRef = outputCollectionRef.doc(year);
+        const yearDataObj = {
+          year: year,
+          Output: yearData[year],
+        };
+        batch.set(yearDocRef, yearDataObj, { merge: true });
+      }
+
+      await batch.commit();
+      console.log("CSV parsing and database write completed successfully.");
     });
 
     await file.createReadStream().pipe(csvStream);
@@ -110,3 +110,4 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
     console.error(`Error processing CSV file: ${error}`);
   }
 });
+``;
