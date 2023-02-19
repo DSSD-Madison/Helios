@@ -40,14 +40,14 @@ const Login = () => {
     };
   }, [navigate]);
 
-  const Title = () => {
+  const getTitle = () => {
     switch (action) {
       case "create-account":
-        return <>Create Account</>;
+        return "Create Account";
       case "reset-password":
-        return <>Reset Password</>;
+        return "Reset Password";
       default:
-        return <>Log In</>;
+        return "Log In";
     }
   };
 
@@ -133,10 +133,10 @@ const Login = () => {
   };
 
   return (
-    <Page title="Login">
+    <Page title={getTitle()}>
       <Container maxWidth="sm">
         <Typography variant="h3" align="center" gutterBottom>
-          <Title />
+          {getTitle()}
         </Typography>
 
         <Formik
