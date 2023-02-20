@@ -36,13 +36,11 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
       })
     );
 
-    // // Determine the collection name based on the file path.
-    const collectionName = filePath.slice(0, filePath.lastIndexOf("_"));
+    // // Determine the document id based on the file path.
+    const docID = filePath.slice(0, filePath.lastIndexOf("_"));
 
     // Set the file name in the database.
-    const docFileRef = solarArraysRef.doc(collectionName);
-    // const fileName = { Name: collectionName };
-    // await docFileRef.set(fileName);
+    const docFileRef = solarArraysRef.doc(docID);
 
     const yearData = {};
 
