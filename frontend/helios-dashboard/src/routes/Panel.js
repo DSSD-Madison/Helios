@@ -253,7 +253,7 @@ const Panel = () => {
                         variant="contained"
                         disabled={formik.isSubmitting}
                       >
-                        Submit
+                        Update
                       </Button>
                       <Button
                         variant="contained"

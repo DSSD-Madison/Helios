@@ -188,7 +188,7 @@ export default function Admin() {
                   variant="contained"
                   disabled={formik.isSubmitting}
                 >
-                  Submit
+                  Add
                 </Button>
               </Stack>
 

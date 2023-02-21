@@ -1,10 +1,10 @@
 import Page from "../layouts/Page";
-import { Typography } from "@mui/material";
+import demo from "../assets/demo.png";
 
 export default function Dashboard() {
   return (
     <Page title="Dashboard">
-      <Typography>Home!</Typography>
+      <img src={demo} alt="demo" style={{ width: "100%" }} />
     </Page>
   );
 }

@@ -120,6 +120,7 @@ const Login = () => {
           setErrors({ submit: err.message });
           return;
         }
+        navigate("/auth/reset-confirm");
 
         break;
       default:

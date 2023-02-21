@@ -11,6 +11,7 @@ import { ConfirmProvider } from "material-ui-confirm";
 import Dashboard from "./routes/Dashboard";
 import Login from "./routes/Login";
 import Panel from "./routes/Panel";
+import ResetConfirm from "./routes/ResetConfirm";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/auth/log-in" element={<Login />} />
             <Route path="/auth/create-account" element={<Login />} />
             <Route path="/auth/reset-password" element={<Login />} />
+            <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
             <Route path="/auth" element={<Navigate to="/auth/login" />} />
           </Route>
 
