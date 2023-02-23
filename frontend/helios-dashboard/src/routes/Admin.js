@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import { addDoc, collection, doc, getDocs, setDoc } from "@firebase/firestore";
+import { addDoc, collection, getDocs } from "@firebase/firestore";
 import { auth, db } from "../firebase.js";
 import { number, object, string } from "yup";
 import { useEffect, useState } from "react";
@@ -28,10 +28,35 @@ export default function Admin() {
     navigate("/");
   };
 
-  const columns = ["Name", "Beta", "Gamma", "Rho_g", "Area"];
+  const columns = [
+    {
+      name: "ID",
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: "Name",
+    },
+    {
+      name: "Beta",
+    },
+    {
+      name: "Gamma",
+    },
+    {
+      name: "Rho_g",
+    },
+    {
+      name: "Area",
+    },
+  ];
   const options = {
     filter: false,
     selectableRows: "none",
+    onRowClick: (rowData) => {
+      navigate(`/admin/panel/${rowData[0]}`);
+    },
   };
 
   const [panels, setPanels] = useState();
@@ -44,6 +69,7 @@ export default function Admin() {
     snapshot.forEach((doc) => {
       const panel = doc.data();
       let parsedPanel = [];
+      parsedPanel.push(doc.id);
       parsedPanel.push(panel.name);
       parsedPanel.push(panel.beta);
       parsedPanel.push(panel.gamma);
@@ -73,6 +99,8 @@ export default function Admin() {
     { setSubmitting, setErrors, resetForm }
   ) => {
     try {
+      delete solarRef.submit;
+
       await addDoc(solarRef, values);
       await getPanels();
       resetForm();
@@ -160,7 +188,7 @@ export default function Admin() {
                   variant="contained"
                   disabled={formik.isSubmitting}
                 >
-                  Submit
+                  Add
                 </Button>
               </Stack>
 
