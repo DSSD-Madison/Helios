@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "frontend-start": "npm run start --prefix ./frontend/helios-dashboard",
-    "frontend-build": "npm run build --prefix ./frontend/helios-dashboard",
-    "functions-start": "npm run serve --prefix ./functions",
-    "functions-build": "npm run deploy --prefix ./functions"
+    "deploy-firestore": "firebase deploy --only firestore:rules",
+    "deploy-storage": "firebase deploy --only storage",
+    "dev": "concurrently \"firebase emulators:start\" \"npm run dev --prefix ./frontend/helios-dashboard\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "firebase-tools": "^11.24.0"
   }
 }
