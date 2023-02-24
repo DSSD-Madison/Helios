@@ -111,3 +111,14 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
     return false;
   }
 });
+
+/**
+ * Cloud function that creates a new document for a user in the users collection when a user signs up
+ */
+exports.createUserDoc = functions.auth.user().onCreate((user) => {
+  const userDoc = admin.firestore().collection('users').doc(user.uid);
+  return userDoc.set({
+    email: user.email,
+    isAdmin: false
+  });
+});
