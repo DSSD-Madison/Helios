@@ -7,8 +7,11 @@
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.11.0",
+    "@mui/lab": "^5.0.0-alpha.120",
     "@mui/material": "^5.11.8",
     "formik": "^2.2.9",
+    "material-ui-confirm": "^3.0.8",
+    "mui-datatables": "^4.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
@@ -19,8 +22,9 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "deploy": "firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": [

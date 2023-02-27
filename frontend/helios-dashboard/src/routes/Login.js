@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -15,7 +16,6 @@ import { object, ref, string } from "yup";
 import { useLocation, useNavigate } from "react-router";
 
 import Input from "../components/Input.js";
-import { Link } from "react-router-dom";
 import Page from "../layouts/Page";
 import { Stack } from "@mui/system";
 import { auth } from "../firebase.js";
@@ -25,13 +25,17 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+
   const action = location.pathname.split("/").pop();
 
   // When authenticated, redirect
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigate("/admin");
+        const redirect = searchParams.get("redirect");
+
+        navigate(redirect ? redirect : "/admin");
       }
     });
 
@@ -40,14 +44,14 @@ const Login = () => {
     };
   }, [navigate]);
 
-  const Title = () => {
+  const getTitle = () => {
     switch (action) {
       case "create-account":
-        return <>Create Account</>;
+        return "Create Account";
       case "reset-password":
-        return <>Reset Password</>;
+        return "Reset Password";
       default:
-        return <>Log In</>;
+        return "Log In";
     }
   };
 
@@ -116,6 +120,7 @@ const Login = () => {
           setErrors({ submit: err.message });
           return;
         }
+        navigate("/auth/reset-confirm");
 
         break;
       default:
@@ -129,14 +134,13 @@ const Login = () => {
     }
 
     setSubmitting(false);
-    navigate("/admin");
   };
 
   return (
-    <Page title="Login">
+    <Page title={getTitle()}>
       <Container maxWidth="sm">
         <Typography variant="h3" align="center" gutterBottom>
-          <Title />
+          {getTitle()}
         </Typography>
 
         <Formik
