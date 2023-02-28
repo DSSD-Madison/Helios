@@ -12,9 +12,9 @@ import { auth, db } from "../firebase.js";
 import { number, object, string } from "yup";
 import { useEffect, useState } from "react";
 
-import Input from "../components/Input";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
+import PanelFields from "../components/PanelFields.js";
 import { Stack } from "@mui/system";
 import { signOut } from "@firebase/auth";
 import { useNavigate } from "react-router";
@@ -123,21 +123,21 @@ export default function Admin() {
         Welcome, {userEmail}!
       </Alert>
       <Typography variant="h5" gutterBottom>
-        Manage Panels
+        Manage Panel Arrays
       </Typography>
       <Paper
         elevation={4}
         sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
       >
         <Typography variant="h6" gutterBottom>
-          Add a Panel
+          Add an Array
         </Typography>
         <Formik
           initialValues={{
             name: "",
             beta: 0,
             gamma: 0,
-            rho_g: 0,
+            rho_g: 0.2,
             area: 0,
             submit: null,
           }}
@@ -147,42 +147,7 @@ export default function Admin() {
           {(formik) => (
             <Form>
               <Stack direction="row" spacing={2}>
-                <Input
-                  name="name"
-                  label="Name"
-                  type="text"
-                  variant="outlined"
-                  formik={formik}
-                />
-                <Input
-                  name="beta"
-                  label="Beta"
-                  type="number"
-                  variant="outlined"
-                  formik={formik}
-                />
-                <Input
-                  name="gamma"
-                  label="Gamma"
-                  type="number"
-                  variant="outlined"
-                  formik={formik}
-                />
-                <Input
-                  name="rho_g"
-                  label="Rho_g"
-                  type="number"
-                  variant="outlined"
-                  formik={formik}
-                />
-                <Input
-                  name="area"
-                  label="Area"
-                  type="number"
-                  variant="outlined"
-                  formik={formik}
-                />
-
+                <PanelFields formik={formik} />
                 <Button
                   type="submit"
                   variant="contained"
@@ -204,7 +169,7 @@ export default function Admin() {
         </Formik>
       </Paper>
       <MUIDataTable
-        title={"Panels List"}
+        title={"Array List"}
         data={panels}
         columns={columns}
         options={options}
