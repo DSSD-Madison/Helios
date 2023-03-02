@@ -47,7 +47,7 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
     let arrayDoc = await docFileRef.get();
     console.log(arrayDoc);
 
-    let { rho_g, gamma, beta, area } = arrayDoc.data;
+    let { rho_g, gamma, beta, area } = arrayDoc.data();
 
     const yearData = {};
 

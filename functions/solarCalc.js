@@ -308,7 +308,7 @@ for (let i = 0; i < 3; i++) {
     days.push(i + 1)
 }
 
-// calcSolarValues(2022, days, 1, 1, 1, 1, printVal, printExecutionTime, printError, printRequest)
+calcSolarValues(2022, days, 10, 0, 0, 214, printVal, printExecutionTime, printError, printRequest)
 // calcSolarValues(21, days, 10, 0, 0, 214.3)
 
 module.exports = calcSolarValues
