@@ -13,7 +13,9 @@ const https = require('node:https');
  * @param {*} onError error found when fetching data: onError(err)
  * @param {*} onRequestFulfilled a single https request was fulfilled: onRequestFulfilled(id)
  */
-function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onValCalculated, onAllValsCalculated, onError, onRequestFulfilled) {
+async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onValCalculated, onAllValsCalculated, onError, onRequestFulfilled) {
+    year = year.toString().slice(2);
+
     // fetched data
     let storage = {}
 
@@ -124,7 +126,7 @@ function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onValC
                         if (onValCalculated) {
                             onValCalculated(prevId, val)
                         }
-                        results[id] = val
+                        results[prevId] = val
                         remaining -= 1
                     }
                 }
@@ -262,6 +264,10 @@ function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onValC
 
     }
 
+    // removing duplicate days
+    listofdays = listofdays.filter((item,
+        index) => listofdays.indexOf(item) === index);
+
     remaining = listofdays.length
     for (let i = 0; i < listofdays.length; i++) {
         todo[getID(listofdays[i], year)] = true
@@ -289,10 +295,20 @@ function printExecutionTime(data) {
 function printVal(id, val) {
     console.log("Calculated value: " + id + ", " + val)
 }
-days = []
-for (let i = 0; i < 365; i++) {
+
+function printRequest(id) {
+    console.log(`Request fulfilled: ${id}`)
+}
+
+function printError(err) {
+    console.log(`Request failed: ${err}`)
+}
+days = []//1, 6, 300, 200, 24, 100, 101, 103, 230, 230]
+for (let i = 0; i < 3; i++) {
     days.push(i + 1)
 }
 
-calcSolarValues(22, days, 10, 0, 0, 214.3, printVal, printExecutionTime)
+// calcSolarValues(2022, days, 1, 1, 1, 1, printVal, printExecutionTime, printError, printRequest)
 // calcSolarValues(21, days, 10, 0, 0, 214.3)
+
+module.exports = calcSolarValues

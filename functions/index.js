@@ -2,6 +2,8 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const { parse } = require("csv-parse");
+const calcSolarValues = require("./solarCalc");
+
 
 admin.initializeApp();
 
@@ -41,6 +43,11 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
 
     // Set the file name in the database.
     const docFileRef = solarArraysRef.doc(docID);
+
+    let arrayDoc = await docFileRef.get();
+    console.log(arrayDoc);
+
+    let { rho_g, gamma, beta, area } = arrayDoc.data;
 
     const yearData = {};
 
@@ -87,20 +94,23 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
       yearData[year][formattedTimestamp] = solarOutputValue;
     });
 
+    console.log({ beta, gamma, rho_g, area })
     csvStream.on("end", async () => {
-      // Write the solar output data to the database based on the docFileRef
       const outputCollectionRef = docFileRef.collection("Output");
+      // Write the solar output data to the database based on the docFileRef
       const batch = admin.firestore().batch();
       for (const year in yearData) {
         const yearDocRef = outputCollectionRef.doc(year);
         const yearDataObj = {
           Output: yearData[year],
         };
-        batch.set(yearDocRef, yearDataObj, { merge: true });
+        calcSolarValues(year, [1, 2, 3], beta, gamma, rho_g, area, undefined, async abc => {
+          yearDataObj.irradiance = abc;
+          batch.set(yearDocRef, yearDataObj, { merge: true });
+          await batch.commit();
+          console.log("CSV parsing and database write completed successfully.");
+        })
       }
-
-      await batch.commit();
-      console.log("CSV parsing and database write completed successfully.");
     });
 
     await file.createReadStream().pipe(csvStream);
