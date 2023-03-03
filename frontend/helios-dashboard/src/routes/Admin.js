@@ -63,6 +63,7 @@ export default function Admin() {
   const solarRef = collection(db, "Solar Arrays");
 
   const getPanels = async () => {
+    console.log("fetching array data")
     const snapshot = await getDocs(solarRef);
     let data = [];
 
@@ -83,7 +84,7 @@ export default function Admin() {
 
   useEffect(() => {
     getPanels();
-  });
+  }, []);
 
   const validationSchema = () =>
     object().shape({
