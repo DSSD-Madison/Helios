@@ -104,7 +104,12 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
         const yearDataObj = {
           Output: yearData[year],
         };
-        calcSolarValues(year, [1, 2, 3], beta, gamma, rho_g, area, undefined, async abc => {
+
+        days = Object.keys(yearData[year]).map(dateString => {
+          let date = new Date(dateString);
+          return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        })
+        calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, async abc => {
           yearDataObj.irradiance = abc;
           batch.set(yearDocRef, yearDataObj, { merge: true });
           await batch.commit();
