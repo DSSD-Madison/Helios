@@ -311,4 +311,5 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 // calcSolarValues(2022, days, 10, 0, 0, 214, printVal, printExecutionTime, printError, printRequest)
 // calcSolarValues(21, days, 10, 0, 0, 214.3)
 
+
 module.exports = calcSolarValues

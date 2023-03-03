@@ -109,6 +109,7 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
           let date = new Date(dateString);
           return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
         })
+        console.log(days)
         calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, async abc => {
           yearDataObj.irradiance = abc;
           batch.set(yearDocRef, yearDataObj, { merge: true });
