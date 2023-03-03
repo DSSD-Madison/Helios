@@ -25,9 +25,10 @@ import { useNavigate, useParams } from "react-router";
 
 import { Box } from "@mui/system";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import Input from "../components/Input";
+import Loader from "../components/Loader";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
+import PanelFields from "../components/PanelFields";
 import { useConfirm } from "material-ui-confirm";
 
 const Panel = () => {
@@ -42,6 +43,7 @@ const Panel = () => {
   const [isLoading, setLoading] = useState(false);
 
   const getPanel = async (id) => {
+    console.log("getting panel data");
     const panelRef = doc(solarRef, id);
     const panelDoc = await getDoc(panelRef);
 
@@ -107,7 +109,7 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const columns = [
@@ -164,27 +166,10 @@ const Panel = () => {
   };
 
   return (
-    <Page title={panel.name + " Panel"}>
-      {isLoading && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 10,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.6)",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
+    <Page title={panel.name + " Array"}>
+      <Loader isLoading={isLoading} />
       <Typography variant="h5" gutterBottom>
-        Manage {panel.name} Panel
+        Manage {panel.name} Panel Array
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={6}>
@@ -193,7 +178,7 @@ const Panel = () => {
             sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
           >
             <Typography variant="h6" gutterBottom>
-              Update Panel Properties
+              Update Array Properties
             </Typography>
             <Formik
               enableReinitialize
@@ -211,42 +196,7 @@ const Panel = () => {
               {(formik) => (
                 <Form>
                   <Stack spacing={2}>
-                    <Input
-                      name="name"
-                      label="Name"
-                      type="text"
-                      variant="outlined"
-                      formik={formik}
-                    />
-                    <Input
-                      name="beta"
-                      label="Beta"
-                      type="number"
-                      variant="outlined"
-                      formik={formik}
-                    />
-                    <Input
-                      name="gamma"
-                      label="Gamma"
-                      type="number"
-                      variant="outlined"
-                      formik={formik}
-                    />
-                    <Input
-                      name="rho_g"
-                      label="Rho_g"
-                      type="number"
-                      variant="outlined"
-                      formik={formik}
-                    />
-                    <Input
-                      name="area"
-                      label="Area"
-                      type="number"
-                      variant="outlined"
-                      formik={formik}
-                    />
-
+                    <PanelFields formik={formik} />
                     <Stack direction="row" spacing={2}>
                       <Button
                         type="submit"
@@ -261,7 +211,7 @@ const Panel = () => {
                         disabled={formik.isSubmitting}
                         onClick={handleDelete}
                       >
-                        Delete Panel
+                        Delete Array
                       </Button>
                     </Stack>
                   </Stack>

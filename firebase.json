@@ -4,6 +4,9 @@
   },
   "hosting": {
     "public": "frontend/helios-dashboard/build",
+    "predeploy": [
+      "npm --prefix \"frontend/helios-dashboard\" run build"
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",

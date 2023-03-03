@@ -1,13 +1,17 @@
 rules_version = '2';
 service cloud.firestore {
+  match /databases/{database}/documents {
+    
     match /users/{uid} {
-    allow read, write: if request.auth != null && 
-      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+     allow read, write: if request.auth != null && 
+     	get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
     match /Solar%20Arrays/{array} {
-      allow read: if true;
+    	allow read: if true;
       allow write: if request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      	get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
+    
+  }
 }
