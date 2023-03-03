@@ -43,6 +43,7 @@ const Panel = () => {
   const [isLoading, setLoading] = useState(false);
 
   const getPanel = async (id) => {
+    console.log("getting panel data");
     const panelRef = doc(solarRef, id);
     const panelDoc = await getDoc(panelRef);
 
@@ -108,7 +109,7 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const columns = [

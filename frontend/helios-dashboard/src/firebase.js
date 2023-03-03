@@ -13,7 +13,7 @@ const store = getStorage(app);
 // https://create-react-app.dev/docs/adding-custom-environment-variables
 if (process.env.NODE_ENV !== "production") {
     connectAuthEmulator(auth, 'http://localhost:9099');
-    connectFirestoreEmulator(db, 'localhost', 8081);
+    connectFirestoreEmulator(db, 'localhost', 8080);
     connectStorageEmulator(store, 'localhost', 9199);
 }
 
