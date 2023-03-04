@@ -1,10 +1,5 @@
-import Page from "../layouts/Page";
-import demo from "../assets/demo.png";
+import ScatterPlot from "./Scatterplot";
 
 export default function Dashboard() {
-  return (
-    <Page title="Dashboard">
-      <img src={demo} alt="demo" style={{ width: "100%" }} />
-    </Page>
-  );
+  return <ScatterPlot />;
 }
