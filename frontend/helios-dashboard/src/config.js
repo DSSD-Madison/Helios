@@ -4,8 +4,8 @@ const firebaseConfig = {
   projectId: "helios-9d435",
   storageBucket: "helios-9d435.appspot.com",
   messagingSenderId: "768984637940",
-  appId: "1:768984637940:web:b5a0fe060df09188bdd9a1",
-  measurementId: "G-G6CB757SYF",
+  appId: "1:768984637940:web:90dee43f1fc4aeafbdd9a1",
+  measurementId: "G-4FBRG6M1VB"
 };
 
 export { firebaseConfig };
