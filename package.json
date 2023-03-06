@@ -10,10 +10,5 @@
   "devDependencies": {
     "concurrently": "^7.6.0",
     "firebase-tools": "^11.24.0"
-  },
-  "dependencies": {
-    "plotly": "^1.0.6",
-    "plotly.js": "^2.18.2",
-    "react-plotly.js": "^2.6.0"
   }
 }

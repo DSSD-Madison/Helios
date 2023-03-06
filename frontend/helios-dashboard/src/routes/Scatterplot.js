@@ -18,7 +18,7 @@ export default function ScatterPlot() {
         setSelectedMonth(
           Object.keys(
             data[Object.keys(data)[0]][
-              Object.keys(data[Object.keys(data)[0]])[0]
+            Object.keys(data[Object.keys(data)[0]])[0]
             ]
           )[0]
         );
@@ -32,7 +32,7 @@ export default function ScatterPlot() {
     setSelectedMonth(
       Object.keys(
         outputData[event.target.value][
-          Object.keys(outputData[event.target.value])[0]
+        Object.keys(outputData[event.target.value])[0]
         ]
       )[0]
     );
@@ -122,7 +122,7 @@ export default function ScatterPlot() {
                   height: 500,
                   title: `${selectedArray} Output for ${selectedMonth} ${selectedYear}`,
                   xaxis: { title: "Day" },
-                  yaxis: { title: "Output (kWh)" },
+                  yaxis: { title: "Output (Wh)" },
                 }}
               />
             ) : (
