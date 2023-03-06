@@ -1,4 +1,5 @@
 const https = require('node:https');
+const { parse } = require('node:path');
 
 /**
  * Computes irradiance values for a list of days in a year. Returns void, so use callback functions for control
@@ -30,6 +31,11 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
     // resulting calculations
     let results = {};
+
+    function convertIdToString(id) {
+        const date = new Date(parseInt(id.slice(0, 2)) + 2000, 0, parseInt(id.slice(2, 5)));
+        return date.getTime()
+    }
 
     // Helper math functions
     function toRadians(angle) {
@@ -115,7 +121,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
                         if (onValCalculated) {
                             onValCalculated(id, val)
                         }
-                        results[id] = val
+                        results[convertIdToString(id)] = val
                         remaining -= 1
                     }
                 }
@@ -126,7 +132,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
                         if (onValCalculated) {
                             onValCalculated(prevId, val)
                         }
-                        results[prevId] = val
+                        results[convertIdToString(prevId)] = val
                         remaining -= 1
                     }
                 }
@@ -258,7 +264,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             total += minute_energy[i];
         }
 
-        return total * arrayarea / 1000
+        return total * arrayarea
 
 
 
@@ -310,6 +316,8 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
 // calcSolarValues(2022, days, 10, 0, 0, 214, printVal, printExecutionTime, printError, printRequest)
 // calcSolarValues(21, days, 10, 0, 0, 214.3)
+
+// console.log(new Date(1661126400000))
 
 
 module.exports = calcSolarValues

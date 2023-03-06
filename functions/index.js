@@ -80,18 +80,20 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
         return;
       }
 
-      const timestamp =
-        admin.firestore.Timestamp.fromMillis(timestampMillis).toDate();
-      const formattedTimestamp = moment(timestamp).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
+      // const timestamp =
+      //   admin.firestore.Timestamp.fromMillis(timestampMillis).toDate();
+      // const intermediateVal = moment(timestamp).format(
+      //   "YYYY-MM-DD HH:mm:ss"
+      // );
+      // let d = new Date(intermediateVal)
+      // let formattedTimestamp = d.getTime()
 
       // Add the solar output data to the yearData object.
       if (!yearData.hasOwnProperty(year)) {
         yearData[year] = {};
       }
 
-      yearData[year][formattedTimestamp] = solarOutputValue;
+      yearData[year][timestampMillis] = solarOutputValue;
     });
 
     console.log({ beta, gamma, rho_g, area })
@@ -106,10 +108,11 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
         };
 
         days = Object.keys(yearData[year]).map(dateString => {
-          let date = new Date(dateString);
+          let date = new Date(parseInt(dateString));
+          // console.log(date)
           return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
         })
-        console.log(days)
+        // console.log(days)
         calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, async abc => {
           yearDataObj.irradiance = abc;
           batch.set(yearDocRef, yearDataObj, { merge: true });
