@@ -104,20 +104,22 @@ exports.onFileUpload = functions
               Output: yearData[year],
             };
 
-            days = Object.keys(yearData[year]).map(dateString => {
-              let date = new Date(parseInt(dateString));
+            days = Object.keys(yearData[year]).map(timestamp => {
+              let date = new Date(parseInt(timestamp));
               return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
             })
-            calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, async abc => {
-              yearDataObj.irradiance = abc;
-              batch.set(yearDocRef, yearDataObj, { merge: true });
-              await batch.commit();
-              console.log("CSV parsing and database write completed successfully.");
-              resolve(true);
-            })
+            await new Promise((resolve, reject) => {
+              calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, irradianceObj => {
+                yearDataObj.irradiance = irradianceObj;
+                batch.set(yearDocRef, yearDataObj, { merge: true });
+                resolve()
+              }, err => reject(err));
+            });
           }
+          await batch.commit();
+          console.log("CSV parsing and database write completed successfully.");
+          resolve(true);
         });
-
         file.createReadStream().pipe(csvStream);
       } catch (error) {
         console.error(`Error processing CSV file: ${error}`);
