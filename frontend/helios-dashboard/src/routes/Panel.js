@@ -29,6 +29,7 @@ import Loader from "../components/Loader";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields";
+import { panel_dates } from "../test_data";
 import { useConfirm } from "material-ui-confirm";
 
 const Panel = () => {
@@ -49,33 +50,29 @@ const Panel = () => {
 
     setPanel(panelDoc.data());
 
-    const uploadList = await listAll(uploadRef);
+    let dates = panel_dates;
+    dates = dates.map((date) => new Date(date));
 
-    let data = [];
-    for (const doc of uploadList.items) {
-      let parsedUpload = [];
+    let _dateRanges = [];
+    let startDate = null;
+    let lastDate = null;
+    for (let i = 0; i < dates.length; i++) {
+      if (!startDate) {
+        startDate = dates[i].getTime();
+        lastDate = startDate;
+        continue;
+      }
 
-      const nameParts = doc.name.split(/_|\./);
-      if (nameParts.length < 3) continue;
-      const date = Number(nameParts[1]);
+      let currentDate = dates[i].getTime();
+      if (currentDate > lastDate + 24 * 60 * 60 * 1000 /* one day */) {
+        _dateRanges.push([new Date(startDate), new Date(lastDate)]);
+        startDate = currentDate;
+      }
 
-      if (nameParts[0] !== panelId) continue;
-
-      const metaRef = ref(store, doc.fullPath);
-      const metadata = await getMetadata(metaRef);
-
-      const origName =
-        metadata && metadata.customMetadata && metadata.customMetadata.origName
-          ? metadata.customMetadata.origName
-          : "none";
-
-      parsedUpload.push(origName);
-      parsedUpload.push(date);
-
-      data.push(parsedUpload);
+      lastDate = currentDate;
     }
 
-    setUploads(data);
+    setUploads(_dateRanges);
   };
 
   useEffect(() => {
@@ -109,13 +106,19 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) { }
+    } catch (e) {}
   };
 
   const columns = [
-    { name: "Uploaded Name" },
     {
-      name: "Date",
+      name: "Start Date",
+      options: {
+        filter: false,
+        customBodyRender: (value) => new Date(value).toLocaleString(),
+      },
+    },
+    {
+      name: "End Date",
       options: {
         filter: false,
         customBodyRender: (value) => new Date(value).toLocaleString(),
@@ -230,7 +233,7 @@ const Panel = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           <MUIDataTable
-            title={"Data Uploads"}
+            title={"Uploaded Data Ranges"}
             data={uploads}
             columns={columns}
             options={options}
