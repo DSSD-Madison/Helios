@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import { addDoc, collection, getDocs } from "@firebase/firestore";
+import { addDoc, collection, getDocscollection, deleteDoc, doc, getDocs, updateDoc, } from "@firebase/firestore";
 import { auth, db } from "../firebase.js";
 import { number, object, string } from "yup";
 import { useEffect, useState } from "react";
@@ -111,6 +111,56 @@ export default function Admin() {
     setSubmitting(false);
   };
 
+
+  //For users table
+  const [usersData, setUsersData] = useState([]);
+  const usersRef = collection(db, "users");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const snapshot = await getDocs(usersRef);
+      let data = [];
+
+      snapshot.forEach((doc) => {
+        const user = doc.data();
+        let userInfo = [];
+        userInfo.push(doc.id);
+        userInfo.push(user.email);
+        userInfo.push(user.isAdmin);
+
+        data.push(userInfo);
+      });
+      setUsersData(data);
+    };
+    fetchData();
+  }, []);
+
+  const usersColumns = [
+    {
+      name: "UID",
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: "Email",
+    },
+    {
+      name: "Admin",
+      options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <input type="checkbox" checked={value} onChange={(event) => updateValue(event.target.checked)} />
+          );
+        },
+      },
+    },
+  ];
+  const usersOptions = {
+    filter: false,
+    // selectableRows: "none",
+  };
+
   return (
     <Page title="Admin">
       <Alert
@@ -174,6 +224,12 @@ export default function Admin() {
         data={panels}
         columns={columns}
         options={options}
+      />
+      <MUIDataTable
+        title={"Users"}
+        data={usersData}
+        columns={usersColumns}
+        options={usersOptions}
       />
     </Page>
   );
