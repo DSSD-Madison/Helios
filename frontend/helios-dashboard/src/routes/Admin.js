@@ -5,6 +5,7 @@ import {
   FormHelperText,
   Paper,
   Typography,
+  Checkbox,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { addDoc, collection, getDocscollection, deleteDoc, doc, getDocs, updateDoc, } from "@firebase/firestore";
@@ -152,15 +153,27 @@ export default function Admin() {
       name: "Admin",
       options: {
         customBodyRender: (value, tableMeta, updateValue) => {
+          const docId = tableMeta.rowData[0];
+          const updateAdmin = async (event) => {
+            const isAdmin = event.target.checked;
+            const currentUser = auth.currentUser;
+            if (docId === currentUser.uid) { //Don't want admins to accidently disable their access
+              window.alert("You cannot update your own admin status");
+              return;
+            }
+            updateValue(isAdmin); //updating checkbox in the table
+            await updateDoc(doc(usersRef, docId), { isAdmin }); //updating isAdmin in firestore document
+          };
           return (
-            <input type="checkbox" checked={value} onChange={(event) => updateValue(event.target.checked)} />
+            <input type="checkbox" checked={value} onChange={updateAdmin} />
           );
         },
       },
     },
   ];
+
   const usersOptions = {
-    filter: false,
+    // filter: false,
     // selectableRows: "none",
   };
 
@@ -256,9 +269,9 @@ export default function Admin() {
       </Paper>
       <Paper
         elevation={4}
-        sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
+      // sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
       >
-        <Typography variant="h6" gutterBottom>
+        {/* <Typography variant="h6" gutterBottom>
           Add a User
         </Typography>
         <Formik
@@ -313,7 +326,7 @@ export default function Admin() {
               )}
             </Form>
           )}
-        </Formik>
+        </Formik> */}
 
         <MUIDataTable
           title={"Users"}
