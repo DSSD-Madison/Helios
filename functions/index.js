@@ -4,7 +4,6 @@ const moment = require("moment");
 const { parse } = require("csv-parse");
 const calcSolarValues = require("./solarCalc");
 
-
 admin.initializeApp();
 
 const solarArraysRef = admin.firestore().collection("Solar Arrays");
@@ -96,30 +95,53 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
       yearData[year][timestampMillis] = solarOutputValue;
     });
 
-    console.log({ beta, gamma, rho_g, area })
+    console.log({ beta, gamma, rho_g, area });
     csvStream.on("end", async () => {
       const outputCollectionRef = docFileRef.collection("Output");
       // Write the solar output data to the database based on the docFileRef
       const batch = admin.firestore().batch();
+
+      const promises = [];
+
       for (const year in yearData) {
         const yearDocRef = outputCollectionRef.doc(year);
         const yearDataObj = {
           Output: yearData[year],
         };
 
-        days = Object.keys(yearData[year]).map(dateString => {
+        days = Object.keys(yearData[year]).map((dateString) => {
           let date = new Date(parseInt(dateString));
           // console.log(date)
-          return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-        })
+          return Math.floor(
+            (date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24)
+          );
+        });
         // console.log(days)
-        calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, async abc => {
-          yearDataObj.irradiance = abc;
-          batch.set(yearDocRef, yearDataObj, { merge: true });
-          await batch.commit();
-          console.log("CSV parsing and database write completed successfully.");
-        })
+
+        // Wrap the calcSolarValues() call with a Promise and push it to the promises array
+        const solarValuesPromise = new Promise((resolve) => {
+          calcSolarValues(
+            year,
+            days,
+            beta,
+            gamma,
+            rho_g,
+            area,
+            undefined,
+            (abc) => {
+              yearDataObj.irradiance = abc;
+              batch.set(yearDocRef, yearDataObj, { merge: true });
+              resolve();
+            }
+          );
+        });
+
+        promises.push(solarValuesPromise);
       }
+
+      await Promise.all(promises);
+      await batch.commit();
+      console.log("CSV parsing and database write completed successfully.");
     });
 
     await file.createReadStream().pipe(csvStream);
@@ -135,9 +157,9 @@ exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
  * Cloud function that creates a new document for a user in the users collection when a user signs up
  */
 exports.createUserDoc = functions.auth.user().onCreate((user) => {
-  const userDoc = admin.firestore().collection('users').doc(user.uid);
+  const userDoc = admin.firestore().collection("users").doc(user.uid);
   return userDoc.set({
     email: user.email,
-    isAdmin: false
+    isAdmin: false,
   });
 });
