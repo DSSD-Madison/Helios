@@ -29,7 +29,6 @@ export function aggregateOutputData() {
                 const irradianceDict = outputDoc.data().irradiance;
 
                 for (const dateStr in outputDict) {
-                  console.log(dateStr);
                   const dateObj = new Date(parseInt(dateStr, 10));
                   const output = outputDict[dateStr];
                   const irradiance = irradianceDict[dateStr];
