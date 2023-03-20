@@ -1,5 +1,4 @@
 const https = require('node:https');
-const { parse } = require('node:path');
 
 /**
  * Computes irradiance values for a list of days in a year. Returns void, so use callback functions for control

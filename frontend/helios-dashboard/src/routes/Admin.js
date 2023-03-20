@@ -5,11 +5,12 @@ import {
   FormHelperText,
   Paper,
   Typography,
+  Checkbox,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import { addDoc, collection, getDocs } from "@firebase/firestore";
+import { addDoc, collection, getDocscollection, deleteDoc, doc, getDocs, updateDoc, } from "@firebase/firestore";
 import { auth, db } from "../firebase.js";
-import { number, object, string } from "yup";
+import { boolean, number, object, string } from "yup";
 import { useEffect, useState } from "react";
 
 import MUIDataTable from "mui-datatables";
@@ -18,6 +19,8 @@ import PanelFields from "../components/PanelFields.js";
 import { Stack } from "@mui/system";
 import { signOut } from "@firebase/auth";
 import { useNavigate } from "react-router";
+
+import Input from "../components/Input";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -111,6 +114,91 @@ export default function Admin() {
     setSubmitting(false);
   };
 
+
+  //For users table
+  const [usersData, setUsersData] = useState([]);
+  const usersRef = collection(db, "users");
+
+  const getUsers = async () => {
+    const snapshot = await getDocs(usersRef);
+    let data = [];
+
+    snapshot.forEach((doc) => {
+      const user = doc.data();
+      let userInfo = [];
+      userInfo.push(doc.id);
+      userInfo.push(user.email);
+      userInfo.push(user.isAdmin);
+
+      data.push(userInfo);
+    });
+    setUsersData(data);
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const usersColumns = [
+    {
+      name: "UID",
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: "Email",
+    },
+    {
+      name: "Admin",
+      options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          const docId = tableMeta.rowData[0];
+          const updateAdmin = async (event) => {
+            const isAdmin = event.target.checked;
+            const currentUser = auth.currentUser;
+            if (docId === currentUser.uid) { //Don't want admins to accidently disable their access
+              window.alert("You cannot update your own admin status");
+              return;
+            }
+            updateValue(isAdmin); //updating checkbox in the table
+            await updateDoc(doc(usersRef, docId), { isAdmin }); //updating isAdmin in firestore document
+          };
+          return (
+            <input type="checkbox" checked={value} onChange={updateAdmin} />
+          );
+        },
+      },
+    },
+  ];
+
+  const usersOptions = {
+    // filter: false,
+    // selectableRows: "none",
+  };
+
+  const userValidationSchema = () =>
+    object().shape({
+      email: string().required(),
+      isAdmin: boolean().required(),
+    });
+
+  const userHandleSubmit = async (
+    values,
+    { setSubmitting, setErrors, resetForm }
+  ) => {
+    try {
+      delete usersRef.submit;
+
+      await addDoc(usersRef, values);
+      await getUsers();
+      resetForm();
+    } catch (err) {
+      setErrors({ submit: err.message });
+    }
+    setSubmitting(false);
+  };
+
   return (
     <Page title="Admin">
       <Alert
@@ -169,12 +257,84 @@ export default function Admin() {
           )}
         </Formik>
       </Paper>
-      <MUIDataTable
-        title={"Array List"}
-        data={panels}
-        columns={columns}
-        options={options}
-      />
-    </Page>
+      <Paper
+        sx={{ marginBottom: "2rem" }}
+      >
+        <MUIDataTable
+          title={"Array List"}
+          data={panels}
+          columns={columns}
+          options={options}
+        />
+      </Paper>
+      <Paper
+        elevation={4}
+      // sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
+      >
+        {/* <Typography variant="h6" gutterBottom>
+          Add a User
+        </Typography>
+        <Formik
+          initialValues={{
+            email: "",
+            isAdmin: false
+          }}
+          validationSchema={userValidationSchema}
+          onSubmit={userHandleSubmit}
+        >
+          {(formik) => (
+            <Form>
+              <Stack direction="row" spacing={3}>
+                <Input
+                  name="email"
+                  label="Email"
+                  type="email"
+                  variant="outlined"
+                  formik={formik}
+                  required="true"
+                  sx={{
+                    width: .3,
+                    height: "100%",
+                  }}
+                />
+                <Input
+                  name="isAdmin"
+                  label="Admin"
+                  type="checkbox"
+                  variant="outlined"
+                  formik={formik}
+                  sx={{
+                    width: .1,
+                    height: "100%",
+                  }}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={formik.isSubmitting}
+                >
+                  Add
+                </Button>
+              </Stack>
+
+              {formik.errors.submit && (
+                <Box mt={3}>
+                  <FormHelperText error sx={{ textAlign: "center" }}>
+                    {formik.errors.submit}
+                  </FormHelperText>
+                </Box>
+              )}
+            </Form>
+          )}
+        </Formik> */}
+
+        <MUIDataTable
+          title={"Users"}
+          data={usersData}
+          columns={usersColumns}
+          options={usersOptions}
+        />
+      </Paper>
+    </Page >
   );
 }

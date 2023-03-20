@@ -17,141 +17,129 @@ const solarArraysRef = admin.firestore().collection("Solar Arrays");
  * @param {string} object.name - Name of the file uploaded to Cloud Storage.
  * @returns {boolean} - Returns true if the function executed successfully, false otherwise.
  */
-exports.onFileUpload = functions.storage.object().onFinalize(async (object) => {
-  try {
-    const fileBucket = object.bucket;
-    const filePath = object.name;
+exports.onFileUpload = functions
+  .runWith({
+    memory: "2GB",
+  })
+  .storage.object()
+  .onFinalize(async (object) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const fileBucket = object.bucket;
+        const filePath = object.name;
 
-    if (!filePath.endsWith(".csv")) {
-      console.log(`File ${filePath} is not in CSV format, skipping...`);
-      return false;
-    }
+        if (!filePath.endsWith(".csv")) {
+          console.log(`File ${filePath} is not in CSV format, skipping...`);
+          return false;
+        }
 
-    // create a reference to the Cloud Storage file and set up a CSV parser
-    const bucket = admin.storage().bucket(fileBucket);
-    const file = bucket.file(filePath);
-    const csvStream = file.createReadStream().pipe(
-      parse({
-        delimiter: [";", ",", "\t", "|"],
-        columns: true, // use the first row as column headers
-      })
-    );
+        // create a reference to the Cloud Storage file and set up a CSV parser
+        const bucket = admin.storage().bucket(fileBucket);
+        const file = bucket.file(filePath);
+        const csvStream = file.createReadStream().pipe(
+          parse({
+            delimiter: [";", ",", "\t", "|"],
+            columns: true, // use the first row as column headers
+          })
+        );
 
-    // // Determine the document id based on the file path.
-    const docID = filePath.slice(0, filePath.lastIndexOf("_"));
+        // // Determine the document id based on the file path.
+        const docID = filePath.slice(0, filePath.lastIndexOf("_"));
 
-    // Set the file name in the database.
-    const docFileRef = solarArraysRef.doc(docID);
+        // Set the file name in the database.
+        const docFileRef = solarArraysRef.doc(docID);
 
-    let arrayDoc = await docFileRef.get();
-    console.log(arrayDoc);
+        let arrayDoc = await docFileRef.get();
 
-    let { rho_g, gamma, beta, area } = arrayDoc.data();
+        let { rho_g, gamma, beta, area } = arrayDoc.data();
 
-    const yearData = {};
+        const yearData = {};
 
-    csvStream.on("data", (data) => {
-      // Find the column headers in the current row that contain the date and solar output values.
-      const dateKey = Object.keys(data).find((key) => /date/i.test(key));
-      const solarOutputValueKey = Object.keys(data).find((key) =>
-        /total.*yield/i.test(key)
-      );
-
-      // If either column header is missing, skip the row.
-      if (dateKey === undefined || solarOutputValueKey === undefined) {
-        console.log("Skipping row - missing required column(s).");
-        return;
-      }
-
-      // Extract date from the row and convert solar output value to an integer if possible.
-      const solarOutputValue = parseInt(data[solarOutputValueKey], 10);
-      if (isNaN(solarOutputValue)) {
-        return;
-      }
-
-      const date = data[dateKey].replace(/\//g, "-");
-      const year = new Date(date).getFullYear().toString();
-
-      // Parse the date and format the timestamp.
-      const timestampMillis = Date.parse(date);
-      if (isNaN(timestampMillis)) {
-        console.log(`Skipping row - invalid date: ${date}`);
-        return;
-      }
-
-      // const timestamp =
-      //   admin.firestore.Timestamp.fromMillis(timestampMillis).toDate();
-      // const intermediateVal = moment(timestamp).format(
-      //   "YYYY-MM-DD HH:mm:ss"
-      // );
-      // let d = new Date(intermediateVal)
-      // let formattedTimestamp = d.getTime()
-
-      // Add the solar output data to the yearData object.
-      if (!yearData.hasOwnProperty(year)) {
-        yearData[year] = {};
-      }
-
-      yearData[year][timestampMillis] = solarOutputValue;
-    });
-
-    console.log({ beta, gamma, rho_g, area });
-    csvStream.on("end", async () => {
-      const outputCollectionRef = docFileRef.collection("Output");
-      // Write the solar output data to the database based on the docFileRef
-      const batch = admin.firestore().batch();
-
-      const promises = [];
-
-      for (const year in yearData) {
-        const yearDocRef = outputCollectionRef.doc(year);
-        const yearDataObj = {
-          Output: yearData[year],
-        };
-
-        days = Object.keys(yearData[year]).map((dateString) => {
-          let date = new Date(parseInt(dateString));
-          // console.log(date)
-          return Math.floor(
-            (date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24)
+        csvStream.on("data", (data) => {
+          // Find the column headers in the current row that contain the date and solar output values.
+          const dateKey = Object.keys(data).find((key) => /date/i.test(key));
+          const solarOutputValueKey = Object.keys(data).find((key) =>
+            /total.*yield/i.test(key)
           );
-        });
-        // console.log(days)
 
-        // Wrap the calcSolarValues() call with a Promise and push it to the promises array
-        const solarValuesPromise = new Promise((resolve) => {
-          calcSolarValues(
-            year,
-            days,
-            beta,
-            gamma,
-            rho_g,
-            area,
-            undefined,
-            (abc) => {
-              yearDataObj.irradiance = abc;
-              batch.set(yearDocRef, yearDataObj, { merge: true });
-              resolve();
-            }
-          );
+          // If either column header is missing, skip the row.
+          if (dateKey === undefined || solarOutputValueKey === undefined) {
+            console.log("Skipping row - missing required column(s).");
+            return;
+          }
+
+          // Extract date from the row and convert solar output value to an integer if possible.
+          const solarOutputValue = parseInt(data[solarOutputValueKey], 10);
+          if (isNaN(solarOutputValue)) {
+            return;
+          }
+
+          const date = data[dateKey].replace(/\//g, "-");
+          const year = new Date(date).getFullYear().toString();
+
+          // Parse the date and format the timestamp.
+          const timestampMillis = Date.parse(date);
+          if (isNaN(timestampMillis)) {
+            console.log(`Skipping row - invalid date: ${date}`);
+            return;
+          }
+
+          // Add the solar output data to the yearData object.
+          if (!yearData.hasOwnProperty(year)) {
+            yearData[year] = {};
+          }
+
+          yearData[year][timestampMillis] = solarOutputValue;
         });
 
-        promises.push(solarValuesPromise);
+        let calc;
+
+        csvStream.on("end", async () => {
+          const outputCollectionRef = docFileRef.collection("Output");
+          // Write the solar output data to the database based on the docFileRef
+          const batch = admin.firestore().batch();
+          for (const year in yearData) {
+            const yearDocRef = outputCollectionRef.doc(year);
+            const yearDataObj = {
+              Output: yearData[year],
+            };
+
+            days = Object.keys(yearData[year]).map((timestamp) => {
+              let date = new Date(parseInt(timestamp));
+              return Math.floor(
+                (date - new Date(date.getFullYear(), 0, 0)) /
+                  (1000 * 60 * 60 * 24)
+              );
+            });
+            await new Promise((resolve, reject) => {
+              calcSolarValues(
+                year,
+                days,
+                beta,
+                gamma,
+                rho_g,
+                area,
+                undefined,
+                (irradianceObj) => {
+                  yearDataObj.irradiance = irradianceObj;
+                  batch.set(yearDocRef, yearDataObj, { merge: true });
+                  resolve();
+                },
+                (err) => reject(err)
+              );
+            });
+          }
+          await batch.commit();
+          console.log("CSV parsing and database write completed successfully.");
+          resolve(true);
+        });
+        file.createReadStream().pipe(csvStream);
+      } catch (error) {
+        console.error(`Error processing CSV file: ${error}`);
+        reject(error);
       }
-
-      await Promise.all(promises);
-      await batch.commit();
-      console.log("CSV parsing and database write completed successfully.");
     });
-
-    await file.createReadStream().pipe(csvStream);
-
-    return true;
-  } catch (error) {
-    console.error(`Error processing CSV file: ${error}`);
-    return false;
-  }
-});
+  });
 
 /**
  * Cloud function that creates a new document for a user in the users collection when a user signs up
