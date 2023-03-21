@@ -2,25 +2,24 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   FormHelperText,
   Paper,
   Typography,
-  Checkbox,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import { addDoc, collection, getDocscollection, deleteDoc, doc, getDocs, updateDoc, } from "@firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getDocscollection, updateDoc, } from "@firebase/firestore";
 import { auth, db } from "../firebase.js";
 import { boolean, number, object, string } from "yup";
 import { useEffect, useState } from "react";
 
+import Input from "../components/Input";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields.js";
 import { Stack } from "@mui/system";
 import { signOut } from "@firebase/auth";
 import { useNavigate } from "react-router";
-
-import Input from "../components/Input";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -165,7 +164,7 @@ export default function Admin() {
             await updateDoc(doc(usersRef, docId), { isAdmin }); //updating isAdmin in firestore document
           };
           return (
-            <input type="checkbox" checked={value} onChange={updateAdmin} />
+            <Checkbox checked={value} onChange={updateAdmin} />
           );
         },
       },

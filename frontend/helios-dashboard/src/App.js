@@ -12,6 +12,7 @@ import Dashboard from "./routes/Dashboard";
 import Login from "./routes/Login";
 import Panel from "./routes/Panel";
 import ResetConfirm from "./routes/ResetConfirm";
+import WhatIf from "./routes/WhatIf";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/admin/panel/:panelId" element={<Panel />} />
           </Route>
 
+          <Route path="/what-if" element={<WhatIf />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
