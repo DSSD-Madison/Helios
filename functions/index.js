@@ -4,7 +4,6 @@ const moment = require("moment");
 const { parse } = require("csv-parse");
 const calcSolarValues = require("./solarCalc");
 
-
 admin.initializeApp();
 
 const solarArraysRef = admin.firestore().collection("Solar Arrays");
@@ -20,9 +19,10 @@ const solarArraysRef = admin.firestore().collection("Solar Arrays");
  */
 exports.onFileUpload = functions
   .runWith({
-    memory: "2GB"
+    memory: "2GB",
   })
-  .storage.object().onFinalize(async (object) => {
+  .storage.object()
+  .onFinalize(async (object) => {
     return new Promise(async (resolve, reject) => {
       try {
         const fileBucket = object.bucket;
@@ -104,16 +104,29 @@ exports.onFileUpload = functions
               Output: yearData[year],
             };
 
-            days = Object.keys(yearData[year]).map(timestamp => {
+            days = Object.keys(yearData[year]).map((timestamp) => {
               let date = new Date(parseInt(timestamp));
-              return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-            })
+              return Math.floor(
+                (date - new Date(date.getFullYear(), 0, 0)) /
+                  (1000 * 60 * 60 * 24)
+              );
+            });
             await new Promise((resolve, reject) => {
-              calcSolarValues(year, days, beta, gamma, rho_g, area, undefined, irradianceObj => {
-                yearDataObj.irradiance = irradianceObj;
-                batch.set(yearDocRef, yearDataObj, { merge: true });
-                resolve()
-              }, err => reject(err));
+              calcSolarValues(
+                year,
+                days,
+                beta,
+                gamma,
+                rho_g,
+                area,
+                undefined,
+                (irradianceObj) => {
+                  yearDataObj.irradiance = irradianceObj;
+                  batch.set(yearDocRef, yearDataObj, { merge: true });
+                  resolve();
+                },
+                (err) => reject(err)
+              );
             });
           }
           await batch.commit();
@@ -125,16 +138,16 @@ exports.onFileUpload = functions
         console.error(`Error processing CSV file: ${error}`);
         reject(error);
       }
-    })
+    });
   });
 
 /**
  * Cloud function that creates a new document for a user in the users collection when a user signs up
  */
 exports.createUserDoc = functions.auth.user().onCreate((user) => {
-  const userDoc = admin.firestore().collection('users').doc(user.uid);
+  const userDoc = admin.firestore().collection("users").doc(user.uid);
   return userDoc.set({
     email: user.email,
-    isAdmin: false
+    isAdmin: false,
   });
 });
