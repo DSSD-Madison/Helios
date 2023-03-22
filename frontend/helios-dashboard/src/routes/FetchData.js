@@ -14,6 +14,7 @@ export function aggregateOutputData() {
         querySnapshot.forEach((doc) => {
           const arrayId = doc.id;
           const outputRef = collection(doc.ref, "Output");
+          const arrayInfo = doc.data();
 
           promises.push(
             Promise.all([getDocs(outputRef)]).then(([outputDocs]) => {
@@ -47,11 +48,11 @@ export function aggregateOutputData() {
                 }))
                 .sort((a, b) => a.date - b.date);
 
-              outputData[arrayId] = {
+              outputData[arrayId] = Object.assign({
                 dates: sortedData.map((item) => item.date),
                 output: sortedData.map((item) => item.output),
                 irradiance: sortedData.map((item) => item.irradiance),
-              };
+              }, arrayInfo);
             })
           );
         });
