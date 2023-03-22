@@ -17,6 +17,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import KeyIcon from "@mui/icons-material/Key";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -28,13 +29,18 @@ const menuOptions = [
     icon: DashboardIcon,
   },
   {
+    title: "What If?",
+    path: "/what-if",
+    icon: QuestionMarkIcon,
+  },
+  {
     title: "Admin",
     path: "/admin",
     icon: KeyIcon,
   },
 ];
 
-const Navigation = ({ title }) => {
+const Navigation = ({ title, ...props }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isDesktop = useMediaQuery("(min-width:600px)");
@@ -57,7 +63,7 @@ const Navigation = ({ title }) => {
           </List>
         </Box>
       </Drawer>
-      <AppBar position="static">
+      <AppBar position="fixed" {...props}>
         <Toolbar>
           {!isDesktop && (
             <IconButton
@@ -76,16 +82,11 @@ const Navigation = ({ title }) => {
             {title} | <b>Helios</b>
           </Typography>
 
-          {isDesktop && (
-            <>
-              <Button color="inherit" component={Link} to="/">
-                Dashboard
-              </Button>
-              <Button color="inherit" component={Link} to="/admin">
-                Admin
-              </Button>
-            </>
-          )}
+          {isDesktop && menuOptions.map((item) => (
+            <Button color="inherit" component={Link} to={item.path} key={item.title}>
+              {item.title}
+            </Button>
+          ))}
         </Toolbar>
       </AppBar>
     </>

@@ -13,6 +13,7 @@
     "material-ui-confirm": "^3.0.8",
     "mui-datatables": "^4.3.0",
     "react": "^18.2.0",
+    "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-plotly.js": "^2.6.0",
