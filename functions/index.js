@@ -131,6 +131,7 @@ exports.onFileUpload = functions
           }
           await batch.commit();
           console.log("CSV parsing and database write completed successfully.");
+          await file.delete();
           resolve(true);
         });
         file.createReadStream().pipe(csvStream);
