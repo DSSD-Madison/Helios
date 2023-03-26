@@ -15,6 +15,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   updateDoc,
 } from "@firebase/firestore";
 import { db, store } from "../firebase";
@@ -29,7 +30,6 @@ import Loader from "../components/Loader";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields";
-import { panel_dates } from "../test_data";
 import { useConfirm } from "material-ui-confirm";
 
 const Panel = () => {
@@ -39,19 +39,31 @@ const Panel = () => {
 
   const solarRef = collection(db, "Solar Arrays");
   const uploadRef = ref(store);
-  const [uploads, setUploads] = useState([]);
+  const [dateRanges, setDateRanges] = useState([]);
   const [panel, setPanel] = useState({});
   const [isLoading, setLoading] = useState(false);
 
+  // Get panel data
   const getPanel = async (id) => {
-    console.log("getting panel data");
+    // Fetch panel properties
     const panelRef = doc(solarRef, id);
     const panelDoc = await getDoc(panelRef);
 
+    // Set panel properties state
     setPanel(panelDoc.data());
 
-    let dates = panel_dates;
-    dates = dates.map((date) => new Date(date));
+    // Fetch panel output
+    const outputRef = collection(panelRef, "Output");
+    const outputSnapshot = await getDocs(outputRef);
+
+    // Get dates of panel output
+    let dates = [];
+    outputSnapshot.forEach((doc) => {
+      const { Output: output } = doc.data();
+      for (const timestamp of Object.keys(output)) {
+        dates.push(new Date(Number(timestamp)));
+      }
+    });
 
     let _dateRanges = [];
     let startDate = null;
@@ -72,7 +84,7 @@ const Panel = () => {
       lastDate = currentDate;
     }
 
-    setUploads(_dateRanges);
+    setDateRanges(_dateRanges);
   };
 
   useEffect(() => {
@@ -234,7 +246,7 @@ const Panel = () => {
         <Grid item xs={12} lg={6}>
           <MUIDataTable
             title={"Uploaded Data Ranges"}
-            data={uploads}
+            data={dateRanges}
             columns={columns}
             options={options}
           />
