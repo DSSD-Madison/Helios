@@ -6,14 +6,15 @@ service cloud.firestore {
      allow read, write: if request.auth != null && 
      	get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
-    match /Solar%20Arrays/{array}/Output/{year} {
-      allow read: if true;
-    }
+    
     match /Solar%20Arrays/{array} {
     	allow read: if true;
       allow write: if request.auth != null && 
       	get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-    }
-    
+    	match /Output/{year} {
+      	allow read: if true;
+        allow write: if false;
+      }
+    }   
   }
 }
