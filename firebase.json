@@ -4,13 +4,13 @@
   },
   "hosting": {
     "public": "frontend/helios-dashboard/build",
-    "predeploy": [
-      "npm --prefix \"frontend/helios-dashboard\" run build"
-    ],
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "predeploy": ["npm --prefix \"frontend/helios-dashboard\" run build"],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   },
   "storage": {
