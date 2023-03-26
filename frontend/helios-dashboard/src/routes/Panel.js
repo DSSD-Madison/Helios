@@ -64,15 +64,16 @@ const Panel = () => {
         dates.push(new Date(Number(timestamp)));
       }
     });
-    dates.forEach((date) => date.setHours(0, 0, 0, 0));
+    dates.forEach((date) => date.setUTCHours(0, 0, 0, 0));
+    dates.sort((d1, d2) => d1.getTime() - d2.getTime());
 
     let _dateRanges = [];
     let startDate = dates[0];
     let lastDate = dates[0];
     for (let i = 1; i < dates.length + 1; i++) {
       let currentDate = dates[i] || new Date(3000, 1, 1); //pad end with extra date so final range in added to _dateRanges
-      console.log({ lastDate, currentDate })
       if (currentDate.getTime() > lastDate.getTime() + 24 * 60 * 60 * 1000) {
+        console.log({ lastDate, currentDate })
         _dateRanges.push([startDate, lastDate]);
         startDate = currentDate;
       }
@@ -118,7 +119,7 @@ const Panel = () => {
   };
 
   const formatDate = date => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en', options);
   }
 
