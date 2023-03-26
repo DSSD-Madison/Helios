@@ -64,20 +64,16 @@ const Panel = () => {
         dates.push(new Date(Number(timestamp)));
       }
     });
+    dates.forEach((date) => date.setHours(0, 0, 0, 0));
 
     let _dateRanges = [];
-    let startDate = null;
-    let lastDate = null;
-    for (let i = 0; i < dates.length; i++) {
-      if (!startDate) {
-        startDate = dates[i].getTime();
-        lastDate = startDate;
-        continue;
-      }
-
-      let currentDate = dates[i].getTime();
-      if (currentDate > lastDate + 24 * 60 * 60 * 1000 /* one day */) {
-        _dateRanges.push([new Date(startDate), new Date(lastDate)]);
+    let startDate = dates[0];
+    let lastDate = dates[0];
+    for (let i = 1; i < dates.length + 1; i++) {
+      let currentDate = dates[i] || new Date(3000, 1, 1); //pad end with extra date so final range in added to _dateRanges
+      console.log({ lastDate, currentDate })
+      if (currentDate.getTime() > lastDate.getTime() + 24 * 60 * 60 * 1000) {
+        _dateRanges.push([startDate, lastDate]);
         startDate = currentDate;
       }
 
@@ -118,22 +114,27 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) {}
+    } catch (e) { }
   };
+
+  const formatDate = date => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en', options);
+  }
 
   const columns = [
     {
       name: "Start Date",
       options: {
         filter: false,
-        customBodyRender: (value) => new Date(value).toLocaleString(),
+        customBodyRender: formatDate
       },
     },
     {
       name: "End Date",
       options: {
         filter: false,
-        customBodyRender: (value) => new Date(value).toLocaleString(),
+        customBodyRender: formatDate,
       },
     },
   ];
