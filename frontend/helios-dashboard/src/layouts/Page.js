@@ -12,7 +12,18 @@ const Page = ({ title, sx, children }) => {
     <>
       <Navigation title={title} />
 
-      <Box sx={{ height: "100%", p: 5, paddingTop: 10, position: "relative", ...sx }}>{children}</Box>
+      <Box
+        sx={{
+          height: "100%",
+          p: 5,
+          py: 10,
+          overflow: "scroll",
+          position: "relative",
+          ...sx,
+        }}
+      >
+        {children}
+      </Box>
     </>
   );
 };
