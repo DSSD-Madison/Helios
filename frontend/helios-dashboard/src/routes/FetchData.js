@@ -60,7 +60,6 @@ export function aggregateOutputData() {
         Promise.all(promises)
           .then(() => {
             resolve(outputData);
-            console.log(outputData);
           })
           .catch((error) => {
             console.log(`Error aggregating Output data: ${error}`);

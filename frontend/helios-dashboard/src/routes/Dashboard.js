@@ -4,6 +4,7 @@ import demo from "../assets/demo.png";
 import { useEffect, useState } from "react";
 import { createLinePlot } from "./Lineplot";
 import { outputIrradiancePercent } from "./LineplotPercent";
+import { plotPrecipData } from "./PrecipPlot"
 
 export default function Dashboard() {
   const [data, setData] = useState();
@@ -17,6 +18,7 @@ export default function Dashboard() {
       );
       createLinePlot(data, selectedId);
       outputIrradiancePercent(data, selectedId);
+      plotPrecipData(data, selectedId)
     });
   }, [selectedName]);
 
@@ -45,6 +47,10 @@ export default function Dashboard() {
       <div id="plot-container" style={{ width: "100%", height: "400px" }}></div>
       <div
         id="plot-container-percent"
+        style={{ width: "100%", height: "400px" }}
+      ></div>
+      <div
+        id="precip-container"
         style={{ width: "100%", height: "400px" }}
       ></div>
       <img src={demo} alt="demo" style={{ width: "100%" }} />
