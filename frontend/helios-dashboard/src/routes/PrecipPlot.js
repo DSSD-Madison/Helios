@@ -34,7 +34,7 @@ export function plotPrecipData(data, selectedId) {
             if (Object.entries(data).length == count) {
                 const layout = {
                     xaxis: {
-                        title: "Precipitation",
+                        title: "Precipitation (mm)",
                     },
                     yaxis: {
                         title: "Efficiency (%)",
