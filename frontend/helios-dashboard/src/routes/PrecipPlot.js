@@ -1,5 +1,5 @@
 import Plotly from "plotly.js-dist";
-import fetchPrecipData from "../weatherData"
+import { fetchPrecipData } from "../weatherData"
 
 export function plotPrecipData(data, selectedId) {
     const containerId = "precip-container";
