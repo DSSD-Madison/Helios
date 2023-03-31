@@ -80,3 +80,5 @@ function fetchPrecipData(dates) {
 // precipData.then((value) => {
 //     console.log(value);
 // });
+
+module.exports = fetchPrecipData

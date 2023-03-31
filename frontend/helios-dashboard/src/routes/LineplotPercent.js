@@ -22,6 +22,16 @@ export function outputIrradiancePercent(data, selectedId) {
         smoothing: 1,
       },
     });
+    traces.push({
+      x: arrayData.dates,
+      y: Array(arrayData.dates.length).fill(14),
+      mode: "lines",
+      name: `Typical % Efficiency`,
+      line: {
+        shape: "spline",
+        smoothing: 1,
+      },
+    });
   }
 
   const layout = {
