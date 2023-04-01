@@ -1,4 +1,4 @@
-import { MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import Page from "../../layouts/Page";
@@ -30,7 +30,7 @@ export default function Dashboard() {
 
   return (
     <Page title="Dashboard">
-      <Stack direction="row" sx={{ alignItems: "center" }}>
+      <Stack direction="row" sx={{ alignItems: "center", mb: 2 }}>
         <Typography htmlFor="solar-array-select" sx={{ mr: 2 }}>
           Select Solar Array:
         </Typography>
@@ -50,16 +50,12 @@ export default function Dashboard() {
             ))}
         </Select>
       </Stack>
-      <div id="plot-container" style={{ width: "100%", height: "400px" }}></div>
-      <div
+      <Box id="plot-container" sx={{ width: "100%", height: "400px" }}></Box>
+      <Box
         id="plot-container-percent"
-        style={{ width: "100%", height: "400px" }}
-      ></div>
-      <div
-        id="precip-container"
-        style={{ width: "100%", height: "400px" }}
-      ></div>
-      <img src={demo} alt="demo" style={{ width: "100%" }} />
+        sx={{ width: "100%", height: "400px" }}
+      ></Box>
+      <Box id="precip-container" sx={{ width: "100%", height: "400px" }}></Box>
     </Page>
   );
 }

@@ -41,9 +41,18 @@ export function plotPrecipData(data, selectedId) {
             title: "Efficiency (%)",
           },
           title: "Precipitation & Efficiency Correlation",
+          margin: {
+            t: 40,
+            l: 45,
+            r: 10,
+            b: 80,
+          },
         };
 
-        Plotly.newPlot(containerId, traces, layout, { responsive: true });
+        Plotly.newPlot(containerId, traces, layout, {
+          responsive: true,
+          displayModeBar: false,
+        });
       }
     });
   }
