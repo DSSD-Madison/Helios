@@ -43,7 +43,6 @@ export function outputIrradiancePercent(data, selectedId) {
     },
     title: {
       text: "Solar Array Efficiency",
-      automargin: true,
     },
     legend: { orientation: "h", y: -0.2 },
     margin: {
