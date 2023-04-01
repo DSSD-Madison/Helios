@@ -15,8 +15,8 @@ const Page = ({ title, sx, children }) => {
       <Box
         sx={{
           height: "100%",
-          p: 5,
-          py: 10,
+          p: [2, 5],
+          py: "80px !important",
           overflow: "scroll",
           position: "relative",
           ...sx,
