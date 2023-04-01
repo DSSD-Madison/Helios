@@ -1,14 +1,16 @@
-import { aggregateOutputData } from "./FetchData";
-import Page from "../layouts/Page";
-import demo from "../assets/demo.png";
+import { MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+
+import Page from "../../layouts/Page";
+import { aggregateOutputData } from "./FetchData";
 import { createLinePlot } from "./Lineplot";
+import demo from "../../assets/demo.png";
 import { outputIrradiancePercent } from "./LineplotPercent";
-import { plotPrecipData } from "./PrecipPlot"
+import { plotPrecipData } from "./PrecipPlot";
 
 export default function Dashboard() {
   const [data, setData] = useState();
-  const [selectedName, setSelectedName] = useState();
+  const [selectedName, setSelectedName] = useState("all");
 
   useEffect(() => {
     aggregateOutputData().then((data) => {
@@ -18,7 +20,7 @@ export default function Dashboard() {
       );
       createLinePlot(data, selectedId);
       outputIrradiancePercent(data, selectedId);
-      plotPrecipData(data, selectedId)
+      plotPrecipData(data, selectedId);
     });
   }, [selectedName]);
 
@@ -28,22 +30,26 @@ export default function Dashboard() {
 
   return (
     <Page title="Dashboard">
-      <div>
-        <label htmlFor="solar-array-select">Select Solar Array:</label>
-        <select
+      <Stack direction="row" sx={{ alignItems: "center" }}>
+        <Typography htmlFor="solar-array-select" sx={{ mr: 2 }}>
+          Select Solar Array:
+        </Typography>
+        <Select
           id="solar-array-select"
           value={selectedName}
           onChange={handleChange}
         >
-          <option value="">All</option>
+          <MenuItem value="all" selected>
+            All
+          </MenuItem>
           {data &&
             Object.values(data).map((arrayData) => (
-              <option key={arrayData.name} value={arrayData.name}>
+              <MenuItem key={arrayData.name} value={arrayData.name}>
                 {arrayData.name}
-              </option>
+              </MenuItem>
             ))}
-        </select>
-      </div>
+        </Select>
+      </Stack>
       <div id="plot-container" style={{ width: "100%", height: "400px" }}></div>
       <div
         id="plot-container-percent"

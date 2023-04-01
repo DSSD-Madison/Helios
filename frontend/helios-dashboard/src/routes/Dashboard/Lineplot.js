@@ -58,5 +58,5 @@ export function createLinePlot(data, selectedId) {
     title: "Solar Array Output and Irradiance",
   };
 
-  Plotly.newPlot(containerId, traces, layout);
+  Plotly.newPlot(containerId, traces, layout, { responsive: true });
 }

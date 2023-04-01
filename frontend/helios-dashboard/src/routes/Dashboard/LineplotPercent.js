@@ -44,5 +44,5 @@ export function outputIrradiancePercent(data, selectedId) {
     title: "Solar Array Efficiency",
   };
 
-  Plotly.newPlot(containerId, traces, layout);
+  Plotly.newPlot(containerId, traces, layout, { responsive: true });
 }
