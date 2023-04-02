@@ -2,9 +2,9 @@ import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import Page from "../../layouts/Page";
+import SavingsBanner from "./SavingsBanner";
 import { aggregateOutputData } from "./FetchData";
 import { createLinePlot } from "./Lineplot";
-import demo from "../../assets/demo.png";
 import { outputIrradiancePercent } from "./LineplotPercent";
 import { plotPrecipData } from "./PrecipPlot";
 
@@ -50,6 +50,7 @@ export default function Dashboard() {
             ))}
         </Select>
       </Stack>
+      <SavingsBanner />
       <Box id="plot-container" sx={{ width: "100%", height: "400px" }}></Box>
       <Box
         id="plot-container-percent"
