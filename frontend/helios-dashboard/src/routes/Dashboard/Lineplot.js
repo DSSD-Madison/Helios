@@ -1,7 +1,7 @@
 import Plotly from "plotly.js-dist";
 
 export function createLinePlot(data, selectedId) {
-  const containerId = "plot-container-percent";
+  const containerId = "plot-container";
   const traces = [];
   console.log(data);
 
