@@ -17,9 +17,10 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import KeyIcon from "@mui/icons-material/Key";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import logo from "../assets/logo.png";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const menuOptions = [
@@ -63,7 +64,11 @@ const Navigation = ({ title, ...props }) => {
           </List>
         </Box>
       </Drawer>
-      <AppBar position="fixed" {...props}>
+      <AppBar
+        position="fixed"
+        sx={{ backgroundColor: "white", color: "black" }}
+        {...props}
+      >
         <Toolbar>
           {!isDesktop && (
             <IconButton
@@ -71,22 +76,37 @@ const Navigation = ({ title, ...props }) => {
               edge="start"
               color="inherit"
               aria-label="menu"
-              sx={{ mr: 2 }}
+              sx={{ mr: [1, 2] }}
               onClick={() => setMenuOpen(true)}
             >
               <MenuIcon />
             </IconButton>
           )}
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {title} | <b>Helios</b>
+          <img
+            style={{ height: isDesktop ? "40px" : "30px" }}
+            src={logo}
+            alt="Helios Logo"
+          />
+          <Typography
+            variant={isDesktop ? "h5" : "h6"}
+            component="div"
+            sx={{ color: "black", pl: [1.5, 3], flexGrow: 1 }}
+          >
+            {title}
           </Typography>
 
-          {isDesktop && menuOptions.map((item) => (
-            <Button color="inherit" component={Link} to={item.path} key={item.title}>
-              {item.title}
-            </Button>
-          ))}
+          {isDesktop &&
+            menuOptions.map((item) => (
+              <Button
+                color="inherit"
+                component={Link}
+                to={item.path}
+                key={item.title}
+              >
+                {item.title}
+              </Button>
+            ))}
         </Toolbar>
       </AppBar>
     </>

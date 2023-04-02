@@ -20,6 +20,7 @@ const solarArraysRef = admin.firestore().collection("Solar Arrays");
 exports.onFileUpload = functions
   .runWith({
     memory: "2GB",
+    timeoutSeconds: 540
   })
   .storage.object()
   .onFinalize(async (object) => {
@@ -108,7 +109,7 @@ exports.onFileUpload = functions
               let date = new Date(parseInt(timestamp));
               return Math.floor(
                 (date - new Date(date.getFullYear(), 0, 0)) /
-                  (1000 * 60 * 60 * 24)
+                (1000 * 60 * 60 * 24)
               );
             });
             await new Promise((resolve, reject) => {

@@ -17,7 +17,7 @@ async function fetchWithTimeout(resource, options = {}) {
  * @param {Date[]} dates 
  * @returns 
  */
-function fetchPrecipData(dates) {
+export function fetchPrecipData(dates) {
     let early = dates[0]
     let late = dates[0]
     let storage = {}
