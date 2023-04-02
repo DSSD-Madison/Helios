@@ -1,5 +1,6 @@
-import { db } from "../firebase";
 import { collection, getDocs } from "@firebase/firestore";
+
+import { db } from "../../firebase";
 
 export function aggregateOutputData() {
   return new Promise((resolve, reject) => {
@@ -48,11 +49,14 @@ export function aggregateOutputData() {
                 }))
                 .sort((a, b) => a.date - b.date);
 
-              outputData[arrayId] = Object.assign({
-                dates: sortedData.map((item) => item.date),
-                output: sortedData.map((item) => item.output),
-                irradiance: sortedData.map((item) => item.irradiance),
-              }, arrayInfo);
+              outputData[arrayId] = Object.assign(
+                {
+                  dates: sortedData.map((item) => item.date),
+                  output: sortedData.map((item) => item.output),
+                  irradiance: sortedData.map((item) => item.irradiance),
+                },
+                arrayInfo
+              );
             })
           );
         });

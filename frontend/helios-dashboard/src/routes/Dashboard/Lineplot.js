@@ -56,7 +56,17 @@ export function createLinePlot(data, selectedId) {
       type: "log",
     },
     title: "Solar Array Output and Irradiance",
+    legend: { orientation: "h", y: -0.2 },
+    margin: {
+      t: 40,
+      l: 45,
+      r: 10,
+      b: 0,
+    },
   };
 
-  Plotly.newPlot(containerId, traces, layout);
+  Plotly.newPlot(containerId, traces, layout, {
+    responsive: true,
+    displayModeBar: false,
+  });
 }

@@ -41,8 +41,20 @@ export function outputIrradiancePercent(data, selectedId) {
     yaxis: {
       title: "Efficiency (%)",
     },
-    title: "Solar Array Efficiency",
+    title: {
+      text: "Solar Array Efficiency",
+    },
+    legend: { orientation: "h", y: -0.2 },
+    margin: {
+      t: 40,
+      l: 45,
+      r: 10,
+      b: 80,
+    },
   };
 
-  Plotly.newPlot(containerId, traces, layout);
+  Plotly.newPlot(containerId, traces, layout, {
+    displayModeBar: false,
+    responsive: true,
+  });
 }
