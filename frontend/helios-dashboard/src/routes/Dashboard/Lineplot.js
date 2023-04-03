@@ -56,7 +56,7 @@ export function createLinePlot(data, selectedId) {
 
   Plotly.newPlot(containerId, traces, layout, {
     responsive: true,
-    displayModeBar: false,
+    displayModeBar: true,
   });
 }
 
