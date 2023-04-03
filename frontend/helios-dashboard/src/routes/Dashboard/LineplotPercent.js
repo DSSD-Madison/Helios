@@ -1,42 +1,63 @@
 import Plotly from "plotly.js-dist";
 
 export function outputIrradiancePercent(data, selectedId) {
-  const containerId = "plot-container";
+  const containerId = "plot-container-percent";
   const traces = [];
+  let latestDate = new Date(0);
+
   for (const [id, arrayData] of Object.entries(data)) {
-    // Skip if the ID does not match the selected ID
-    if (selectedId && id !== selectedId) {
-      continue;
+    // Update the latest date if a more recent date is found
+    const maxDateCandidate = new Date(
+      arrayData.dates[arrayData.dates.length - 1]
+    );
+    if (maxDateCandidate > latestDate) {
+      latestDate = maxDateCandidate;
     }
 
-    const arrayName = arrayData.name || `Array ${id}`;
-    traces.push({
-      x: arrayData.dates,
-      y: arrayData.output.map(
-        (output, i) => (output / arrayData.irradiance[i]) * 100
-      ),
-      mode: "lines",
-      name: `${arrayName} Efficiency`,
-      line: {
-        shape: "spline",
-        smoothing: 1,
-      },
-    });
-    traces.push({
-      x: arrayData.dates,
-      y: Array(arrayData.dates.length).fill(14),
-      mode: "lines",
-      name: `Typical % Efficiency`,
-      line: {
-        shape: "spline",
-        smoothing: 1,
-      },
-    });
+    if (!selectedId || (selectedId && id === selectedId)) {
+      const arrayName = arrayData.name || `Array ${id}`;
+      traces.push({
+        x: arrayData.dates,
+        y: arrayData.output.map(
+          (output, i) => (output / arrayData.irradiance[i]) * 100
+        ),
+        mode: "lines",
+        name: `${arrayName} Efficiency`,
+        line: {
+          shape: "spline",
+          smoothing: 1,
+        },
+      });
+      traces.push({
+        x: arrayData.dates,
+        y: Array(arrayData.dates.length).fill(14),
+        mode: "lines",
+        name: `Typical % Efficiency`,
+        line: {
+          shape: "spline",
+          smoothing: 1,
+        },
+      });
+    }
   }
+
+  // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
+  let sixMonthsAgo = new Date(
+    selectedId
+      ? data[selectedId].dates[data[selectedId].dates.length - 1]
+      : latestDate
+  );
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
   const layout = {
     xaxis: {
       title: "Date",
+      range: [
+        sixMonthsAgo,
+        selectedId
+          ? data[selectedId].dates[data[selectedId].dates.length - 1]
+          : latestDate,
+      ],
     },
     yaxis: {
       title: "Efficiency (%)",
@@ -54,7 +75,7 @@ export function outputIrradiancePercent(data, selectedId) {
   };
 
   Plotly.newPlot(containerId, traces, layout, {
-    displayModeBar: false,
+    displayModeBar: true,
     responsive: true,
   });
 }

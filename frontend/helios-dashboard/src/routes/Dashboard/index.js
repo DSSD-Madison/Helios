@@ -51,11 +51,11 @@ export default function Dashboard() {
         </Select>
       </Stack>
       <SavingsBanner />
-      <Box id="plot-container" sx={{ width: "100%", height: "400px" }}></Box>
       <Box
         id="plot-container-percent"
         sx={{ width: "100%", height: "400px" }}
       ></Box>
+      <Box id="plot-container" sx={{ width: "100%", height: "400px" }}></Box>
       <Box id="precip-container" sx={{ width: "100%", height: "400px" }}></Box>
     </Page>
   );
