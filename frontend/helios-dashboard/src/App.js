@@ -10,6 +10,7 @@ import AdminGuard from "./guards/AdminGuard";
 import { ConfirmProvider } from "material-ui-confirm";
 import Dashboard from "./routes/Dashboard";
 import Login from "./routes/Login";
+import NotAdmin from "./routes/NotAdmin";
 import Panel from "./routes/Panel";
 import ResetConfirm from "./routes/ResetConfirm";
 import WhatIf from "./routes/WhatIf";
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
             <Route path="/auth" element={<Navigate to="/auth/login" />} />
           </Route>
+          <Route path="/auth/not-admin" element={<NotAdmin />} />
 
           <Route element={<AdminGuard expectedAuth={true} />}>
             <Route path="/admin" element={<Admin />} />

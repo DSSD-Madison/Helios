@@ -1,35 +1,6 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 
-import college_library from "../../assets/college-library.jpeg";
-import memorial_library from "../../assets/memorial-library.jpeg";
-import memorial_union from "../../assets/memorial-union.jpeg";
-
-const buildings = [
-  {
-    name: "Memorial Union",
-    beta: 0,
-    gamma: 0,
-    rho_g: 0.2,
-    area: 1000,
-    img: memorial_union,
-  },
-  {
-    name: "Memorial Library",
-    beta: 0,
-    gamma: 0,
-    rho_g: 0.2,
-    area: 2000,
-    img: memorial_library,
-  },
-  {
-    name: "College Library",
-    beta: 0,
-    gamma: 0,
-    rho_g: 0.2,
-    area: 1500,
-    img: college_library,
-  },
-];
+import buildings from "./Buildings";
 
 const BuildingChooser = ({ onBuildingChose }) => {
   return (
@@ -38,7 +9,14 @@ const BuildingChooser = ({ onBuildingChose }) => {
         Choose a building
       </Typography>
 
-      <Box sx={{ display: "flex", justifyContent: "center", pt: 5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          pt: [2, 5],
+        }}
+      >
         {buildings.map((building) => (
           <Button
             sx={{ flexDirection: "column", textAlign: "center", mx: 1, px: 1 }}
@@ -53,6 +31,9 @@ const BuildingChooser = ({ onBuildingChose }) => {
           </Button>
         ))}
       </Box>
+      <Button sx={{ mt: 5 }} onClick={() => onBuildingChose("custom")}>
+        Or, Use a Custom Building
+      </Button>
     </>
   );
 };

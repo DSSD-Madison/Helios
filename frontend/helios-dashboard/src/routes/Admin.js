@@ -6,14 +6,20 @@ import {
   FormHelperText,
   Paper,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import { addDoc, collection, deleteDoc, doc, getDocs, getDocscollection, updateDoc, } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "@firebase/firestore";
 import { auth, db } from "../firebase.js";
-import { boolean, number, object, string } from "yup";
+import { number, object, string } from "yup";
 import { useEffect, useState } from "react";
 
-import Input from "../components/Input";
 import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields.js";
@@ -23,6 +29,8 @@ import { useNavigate } from "react-router";
 
 export default function Admin() {
   const navigate = useNavigate();
+
+  const isDesktop = useMediaQuery("(min-width:600px)");
 
   const userEmail = auth.currentUser && (auth.currentUser.email || "");
   const logOut = () => {
@@ -65,7 +73,6 @@ export default function Admin() {
   const solarRef = collection(db, "Solar Arrays");
 
   const getPanels = async () => {
-    console.log("fetching array data")
     const snapshot = await getDocs(solarRef);
     let data = [];
 
@@ -113,7 +120,6 @@ export default function Admin() {
     setSubmitting(false);
   };
 
-
   //For users table
   const [usersData, setUsersData] = useState([]);
   const usersRef = collection(db, "users");
@@ -156,46 +162,24 @@ export default function Admin() {
           const updateAdmin = async (event) => {
             const isAdmin = event.target.checked;
             const currentUser = auth.currentUser;
-            if (docId === currentUser.uid) { //Don't want admins to accidently disable their access
+            if (docId === currentUser.uid) {
+              //Don't want admins to accidently disable their access
               window.alert("You cannot update your own admin status");
               return;
             }
             updateValue(isAdmin); //updating checkbox in the table
             await updateDoc(doc(usersRef, docId), { isAdmin }); //updating isAdmin in firestore document
           };
-          return (
-            <Checkbox checked={value} onChange={updateAdmin} />
-          );
+          return <Checkbox checked={value} onChange={updateAdmin} />;
         },
       },
     },
   ];
 
   const usersOptions = {
-    // filter: false,
-    // selectableRows: "none",
-  };
-
-  const userValidationSchema = () =>
-    object().shape({
-      email: string().required(),
-      isAdmin: boolean().required(),
-    });
-
-  const userHandleSubmit = async (
-    values,
-    { setSubmitting, setErrors, resetForm }
-  ) => {
-    try {
-      delete usersRef.submit;
-
-      await addDoc(usersRef, values);
-      await getUsers();
-      resetForm();
-    } catch (err) {
-      setErrors({ submit: err.message });
-    }
-    setSubmitting(false);
+    filter: false,
+    viewColumns: false,
+    selectableRows: "none",
   };
 
   return (
@@ -234,7 +218,7 @@ export default function Admin() {
         >
           {(formik) => (
             <Form>
-              <Stack direction="row" spacing={2}>
+              <Stack direction={isDesktop ? "row" : "column"} spacing={2}>
                 <PanelFields formik={formik} />
                 <Button
                   type="submit"
@@ -256,9 +240,7 @@ export default function Admin() {
           )}
         </Formik>
       </Paper>
-      <Paper
-        sx={{ marginBottom: "2rem" }}
-      >
+      <Paper sx={{ marginBottom: "2rem" }}>
         <MUIDataTable
           title={"Array List"}
           data={panels}
@@ -268,7 +250,7 @@ export default function Admin() {
       </Paper>
       <Paper
         elevation={4}
-      // sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
+        // sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
       >
         {/* <Typography variant="h6" gutterBottom>
           Add a User
@@ -334,6 +316,6 @@ export default function Admin() {
           options={usersOptions}
         />
       </Paper>
-    </Page >
+    </Page>
   );
 }
