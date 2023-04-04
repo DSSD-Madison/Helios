@@ -25,10 +25,12 @@ import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields.js";
 import { Stack } from "@mui/system";
 import { signOut } from "@firebase/auth";
+import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
 
 export default function Admin() {
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const isDesktop = useMediaQuery("(min-width:600px)");
 
@@ -163,8 +165,12 @@ export default function Admin() {
             const isAdmin = event.target.checked;
             const currentUser = auth.currentUser;
             if (docId === currentUser.uid) {
-              //Don't want admins to accidently disable their access
-              window.alert("You cannot update your own admin status");
+              //Don't want admins to accidentally disable their access
+              confirm({
+                title: "Action Denied",
+                description: "You cannot update your own admin status",
+                hideCancelButton: true,
+              });
               return;
             }
             updateValue(isAdmin); //updating checkbox in the table
@@ -248,67 +254,7 @@ export default function Admin() {
           options={options}
         />
       </Paper>
-      <Paper
-        elevation={4}
-        // sx={{ marginBottom: "2rem", padding: "1rem", paddingLeft: "24px" }}
-      >
-        {/* <Typography variant="h6" gutterBottom>
-          Add a User
-        </Typography>
-        <Formik
-          initialValues={{
-            email: "",
-            isAdmin: false
-          }}
-          validationSchema={userValidationSchema}
-          onSubmit={userHandleSubmit}
-        >
-          {(formik) => (
-            <Form>
-              <Stack direction="row" spacing={3}>
-                <Input
-                  name="email"
-                  label="Email"
-                  type="email"
-                  variant="outlined"
-                  formik={formik}
-                  required="true"
-                  sx={{
-                    width: .3,
-                    height: "100%",
-                  }}
-                />
-                <Input
-                  name="isAdmin"
-                  label="Admin"
-                  type="checkbox"
-                  variant="outlined"
-                  formik={formik}
-                  sx={{
-                    width: .1,
-                    height: "100%",
-                  }}
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={formik.isSubmitting}
-                >
-                  Add
-                </Button>
-              </Stack>
-
-              {formik.errors.submit && (
-                <Box mt={3}>
-                  <FormHelperText error sx={{ textAlign: "center" }}>
-                    {formik.errors.submit}
-                  </FormHelperText>
-                </Box>
-              )}
-            </Form>
-          )}
-        </Formik> */}
-
+      <Paper elevation={4}>
         <MUIDataTable
           title={"Users"}
           data={usersData}
