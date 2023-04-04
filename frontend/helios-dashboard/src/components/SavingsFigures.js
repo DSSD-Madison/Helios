@@ -5,7 +5,7 @@ import CountUp from "react-countup";
 const SavingsFigures = ({ dollars, watts, co2 }) => {
   return (
     <>
-      <CountUp end={dollars}>
+      <CountUp end={dollars} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -16,7 +16,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </CountUp>
-      <CountUp end={co2}>
+      <CountUp end={co2} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -27,7 +27,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </CountUp>
-      <CountUp end={watts}>
+      <CountUp end={watts} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
