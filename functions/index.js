@@ -172,7 +172,7 @@ exports.getIrradianceDataForPrevYear = functions
         'The function must be called from an App Check verified app.')
     }
 
-    const year = parseInt(new Date(date).getFullYear().toString());
+    const year = new Date().getFullYear();
 
     const isLeapYear = (year % 4 === 0);
     const daysInYear = isLeapYear ? 366 : 365;
@@ -191,6 +191,7 @@ exports.getIrradianceDataForPrevYear = functions
         area,
         undefined,
         (irradiance) => {
+          irradiance.reduce((a, b) => a + b, 0);
           resolve(irradiance);
         },
         (err) => reject(err)
