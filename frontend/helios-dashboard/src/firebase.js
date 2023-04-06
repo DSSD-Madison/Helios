@@ -9,6 +9,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
+const functions = getFunctions(app);
+
 
 // process.env.NODE_ENV automatically defined by create-react-app: 
 // https://create-react-app.dev/docs/adding-custom-environment-variables

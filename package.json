@@ -11,5 +11,9 @@
   "devDependencies": {
     "concurrently": "^7.6.0",
     "firebase-tools": "^11.24.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.5.0",
+    "firebase-functions": "^4.2.1"
   }
 }
