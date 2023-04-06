@@ -4,7 +4,7 @@ import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-import { getFunctions } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 
 const app = initializeApp(firebaseConfig);
