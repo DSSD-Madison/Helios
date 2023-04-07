@@ -191,8 +191,7 @@ exports.getIrradianceDataForPrevYear = functions
         area,
         undefined,
         (irradiance) => {
-          irradiance.reduce((a, b) => a + b, 0);
-          resolve(irradiance);
+          resolve(irradiance.reduce((a, b) => a + b, 0));
         },
         (err) => reject(err)
       );
