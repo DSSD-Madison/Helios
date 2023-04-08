@@ -1,6 +1,5 @@
 import {
   Button,
-  CircularProgress,
   FormHelperText,
   Grid,
   IconButton,
@@ -19,8 +18,8 @@ import {
   updateDoc,
 } from "@firebase/firestore";
 import { db, store } from "../firebase";
-import { getMetadata, listAll, ref, uploadBytes } from "@firebase/storage";
 import { number, object, string } from "yup";
+import { ref, uploadBytes } from "@firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -73,7 +72,7 @@ const Panel = () => {
     for (let i = 1; i < dates.length + 1; i++) {
       let currentDate = dates[i] || new Date(3000, 1, 1); //pad end with extra date so final range in added to _dateRanges
       if (currentDate.getTime() > lastDate.getTime() + 24 * 60 * 60 * 1000) {
-        console.log({ lastDate, currentDate })
+        console.log({ lastDate, currentDate });
         _dateRanges.push([startDate, lastDate]);
         startDate = currentDate;
       }
@@ -115,20 +114,20 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) { }
+    } catch (e) {}
   };
 
-  const formatDate = date => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en', options);
-  }
+  const formatDate = (date) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return date.toLocaleDateString("en", options);
+  };
 
   const columns = [
     {
       name: "Start Date",
       options: {
         filter: false,
-        customBodyRender: formatDate
+        customBodyRender: formatDate,
       },
     },
     {

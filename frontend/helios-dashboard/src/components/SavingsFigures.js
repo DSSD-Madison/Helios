@@ -5,7 +5,7 @@ import ShortCountUp from "./ShortCountUp";
 const SavingsFigures = ({ dollars, watts, co2 }) => {
   return (
     <>
-      <ShortCountUp end={dollars}>
+      <ShortCountUp end={dollars} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -16,7 +16,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </ShortCountUp>
-      <ShortCountUp end={co2}>
+      <ShortCountUp end={co2} delay={0>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -27,7 +27,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </ShortCountUp>
-      <ShortCountUp end={watts}>
+      <ShortCountUp end={watts} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
