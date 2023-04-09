@@ -1,6 +1,6 @@
-import college_library from "../../assets/college-library.jpeg";
-import memorial_library from "../../assets/memorial-library.jpeg";
-import memorial_union from "../../assets/memorial-union.jpeg";
+import college_library from "../assets/college-library.jpeg";
+import memorial_library from "../assets/memorial-library.jpeg";
+import memorial_union from "../assets/memorial-union.jpeg";
 
 const buildings = [
   {

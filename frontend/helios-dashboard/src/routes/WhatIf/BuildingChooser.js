@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 
-import buildings from "./Buildings";
+import buildings from "../../config/buildings";
 
 const BuildingChooser = ({ onBuildingChose }) => {
   return (

@@ -18,7 +18,7 @@ export function createLinePlot(data, selectedId) {
 
     if (!selectedId || (selectedId && id === selectedId)) {
       const arrayName = arrayData.name || `Array ${id}`;
-      addTrace(traces, arrayData, arrayName);
+      addTrace(traces, arrayData.map(val => val / 1000), arrayName);
     }
   }
 
@@ -41,8 +41,8 @@ export function createLinePlot(data, selectedId) {
       ],
     },
     yaxis: {
-      title: "Power (kW) (log-scaled)",
-      type: "log",
+      title: "Power (kWh) (log-scaled)",
+      type: "log"
     },
     title: "Solar Array Output and Irradiance",
     legend: { orientation: "h", y: -0.2 },

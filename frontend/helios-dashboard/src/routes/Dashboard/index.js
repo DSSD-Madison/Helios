@@ -10,17 +10,19 @@ import { plotPrecipData } from "./PrecipPlot";
 
 export default function Dashboard() {
   const [data, setData] = useState();
+  const [selectedId, setSelectedId] = useState();
   const [selectedName, setSelectedName] = useState("all");
 
   useEffect(() => {
     aggregateOutputData().then((data) => {
       setData(data);
-      const selectedId = Object.keys(data).find(
+      const selectedId_ = Object.keys(data).find(
         (id) => data[id].name === selectedName
       );
-      createLinePlot(data, selectedId);
-      outputIrradiancePercent(data, selectedId);
-      plotPrecipData(data, selectedId);
+      setSelectedId(selectedId_);
+      createLinePlot(data, selectedId_);
+      outputIrradiancePercent(data, selectedId_);
+      plotPrecipData(data, selectedId_);
     });
   }, [selectedName]);
 
@@ -50,7 +52,7 @@ export default function Dashboard() {
             ))}
         </Select>
       </Stack>
-      <SavingsBanner />
+      <SavingsBanner data={data} selectedId={selectedId} />
       <Box
         id="plot-container-percent"
         sx={{ width: "100%", height: "400px" }}
