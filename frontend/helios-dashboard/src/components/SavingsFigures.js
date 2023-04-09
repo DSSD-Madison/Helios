@@ -12,7 +12,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
               ref={countUpRef}
               sx={{ fontSize: ["30px", "60px"], fontWeight: "400" }}
             />
-            <Typography>Dollars Saved</Typography>
+            <Typography>$ Saved</Typography>
           </Box>
         )}
       </ShortCountUp>
@@ -23,7 +23,9 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
               ref={countUpRef}
               sx={{ fontSize: ["40px", "80px"], fontWeight: "400" }}
             />
-            <Typography>Pounds CO2 Saved</Typography>
+            <Typography>
+              lb CO<sup>2</sup> Saved
+            </Typography>
           </Box>
         )}
       </ShortCountUp>
