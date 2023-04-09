@@ -4,11 +4,17 @@ import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { getFunctions, httpsCallable } from "firebase/functions";
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
+const functions = getFunctions(app);
+
+export const getIrradianceDataForPrevYear = httpsCallable(functions, 'getIrradianceDataForPrevYear');
+
 
 // process.env.NODE_ENV automatically defined by create-react-app: 
 // https://create-react-app.dev/docs/adding-custom-environment-variables
