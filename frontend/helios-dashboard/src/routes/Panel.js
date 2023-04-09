@@ -59,24 +59,27 @@ const Panel = () => {
     let dates = [];
     outputSnapshot.forEach((doc) => {
       const { Output: output } = doc.data();
-      for (const timestamp of Object.keys(output)) {
-        dates.push(new Date(Number(timestamp)));
+      for (const dateStr of Object.keys(output)) {
+        dates.push(new Date(dateStr));
       }
     });
-    dates.forEach((date) => date.setUTCHours(0, 0, 0, 0));
     dates.sort((d1, d2) => d1.getTime() - d2.getTime());
+    let zeroHourDates = dates.map(date => new Date(date));
+    zeroHourDates.forEach(date => date.setUTCHours(0, 0, 0, 0));
 
     let _dateRanges = [];
     let startDate = dates[0];
     let lastDate = dates[0];
+    let lastZeroHourDate = zeroHourDates[0];
     for (let i = 1; i < dates.length + 1; i++) {
       let currentDate = dates[i] || new Date(3000, 1, 1); //pad end with extra date so final range in added to _dateRanges
-      if (currentDate.getTime() > lastDate.getTime() + 24 * 60 * 60 * 1000) {
+      let currentZeroHourDate = zeroHourDates[i] || new Date(3000, 1, 1);
+      if (currentZeroHourDate.getTime() > lastZeroHourDate.getTime() + 24 * 60 * 60 * 1000) {
         console.log({ lastDate, currentDate });
         _dateRanges.push([startDate, lastDate]);
         startDate = currentDate;
       }
-
+      lastZeroHourDate = currentZeroHourDate;
       lastDate = currentDate;
     }
 
@@ -114,7 +117,7 @@ const Panel = () => {
       await confirm({ description: "This action is permanent!" });
       deleteDoc(doc(solarRef, panelId));
       navigate("/admin");
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const formatDate = (date) => {
