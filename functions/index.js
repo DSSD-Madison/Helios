@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const { parse } = require("csv-parse");
-const { calcSolarValues, convertStringToID } = require("./solarCalc");
+const { calcSolarValues, convertStringToID, convertIDtoString } = require("./solarCalc");
 
 admin.initializeApp();
 
@@ -92,7 +92,7 @@ exports.onFileUpload = functions
             yearData[year] = {};
           }
 
-          yearData[year][key] = solarOutputValue;
+          yearData[year][convertIDtoString(key)] = solarOutputValue;
         });
 
         let calc;
@@ -108,7 +108,8 @@ exports.onFileUpload = functions
             };
 
             days = Object.keys(yearData[year]).map((dateStr) => {
-              return parseInt(dateStr.substring(2))
+              const id = convertStringToID(dateStr)
+              return parseInt(id.substring(2))
             });
 
             await new Promise((resolve, reject) => {
