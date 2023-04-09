@@ -16,7 +16,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </ShortCountUp>
-      <ShortCountUp end={co2} delay={0>
+      <ShortCountUp end={co2} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
