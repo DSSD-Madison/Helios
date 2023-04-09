@@ -34,8 +34,6 @@ function convertStringToID(date) {
     return key
 }
 
-console.log(convertIDtoString('20061'))
-console.log(convertStringToID('01-01-2022'))
 
 /**
  * Computes irradiance values for a list of days in a year. Returns void, so use callback functions for control
@@ -69,7 +67,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     let results = {};
 
     function convertIdToString(id) {
-        return id;
+        return convertIDtoString(id)
         // const date = new Date(parseInt(id.slice(0, 2)) + 2000, 0, parseInt(id.slice(2, 5)));
         // return date.getTime()
     }
