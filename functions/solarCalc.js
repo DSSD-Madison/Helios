@@ -1,5 +1,42 @@
 const https = require('node:https');
 
+function convertIDtoString(id) {
+    const year = parseInt(parseInt(id.slice(0, 2)) + 2000)
+    let day = parseInt(id.slice(2, 5))
+    if (day <= 31) {
+        return "01-" + String(day).padStart(2, '0') + "-" + year
+    }
+
+    if (year % 4 == 0) {
+        if (day <= 60) {
+            return "02-" + String(day - 31).padStart(2, '0') + '-' + year
+        }
+        day -= 1;
+    }
+
+    day -= 31;
+    months = [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    for (let i = 0; i < months.length; i++) {
+        if (day <= months[i]) {
+            return String(i + 2).padStart(2, '0') + '-' + String(day).padStart(2, '0') + '-' + year
+        }
+        day -= months[i]
+    }
+}
+
+function convertStringToID(date) {
+    const year = date.split('-')[2]
+    let dateObj = new Date(date);
+    const key = year.substring(2) + String(Math.floor(
+        (dateObj - new Date('1/1/' + year)) /
+        (1000 * 60 * 60 * 24) + 1
+    )).padStart(3, '0');
+    return key
+}
+
+console.log(convertIDtoString('20061'))
+console.log(convertStringToID('01-01-2022'))
+
 /**
  * Computes irradiance values for a list of days in a year. Returns void, so use callback functions for control
  * @param {*} year 
@@ -32,8 +69,9 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     let results = {};
 
     function convertIdToString(id) {
-        const date = new Date(parseInt(id.slice(0, 2)) + 2000, 0, parseInt(id.slice(2, 5)));
-        return date.getTime()
+        return id;
+        // const date = new Date(parseInt(id.slice(0, 2)) + 2000, 0, parseInt(id.slice(2, 5)));
+        // return date.getTime()
     }
 
     // Helper math functions
@@ -94,7 +132,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
 
     // downloads data and calls calculate function
-    function downloadData(day, year) {
+    function downloadData(day, year, key) {
         let id = getID(day, year)
         const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
         https.get(url, (resp) => {
@@ -319,4 +357,4 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 // console.log(new Date(1661126400000))
 
 
-module.exports = calcSolarValues
+module.exports = { calcSolarValues, convertIDtoString, convertStringToID }
