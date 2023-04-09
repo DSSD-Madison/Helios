@@ -19,7 +19,7 @@ const SavingsBanner = ({ data, selectedId }) => {
 
       let kwOutput_ = 0;
       for (let dayOutput of arrayData.output) {
-        kwOutput_ += dayOutput;
+        kwOutput_ += dayOutput / 1000;
       }
 
       if (selectedId) setPanelName(arrayData.name);
