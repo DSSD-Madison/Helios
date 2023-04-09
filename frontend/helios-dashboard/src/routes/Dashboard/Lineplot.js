@@ -18,7 +18,7 @@ export function createLinePlot(data, selectedId) {
 
     if (!selectedId || (selectedId && id === selectedId)) {
       const arrayName = arrayData.name || `Array ${id}`;
-      addTrace(traces, arrayData.map(val => val / 1000), arrayName);
+      addTrace(traces, arrayData, arrayName);
     }
   }
 
@@ -63,7 +63,7 @@ export function createLinePlot(data, selectedId) {
 function addTrace(traces, arrayData, arrayName) {
   traces.push({
     x: arrayData.dates,
-    y: arrayData.output,
+    y: arrayData.output.map(val => val / 1000),
     mode: "lines",
     name: `Output (${arrayName})`,
     line: {
@@ -74,7 +74,7 @@ function addTrace(traces, arrayData, arrayName) {
 
   traces.push({
     x: arrayData.dates,
-    y: arrayData.irradiance,
+    y: arrayData.irradiance.map(val => val / 1000),
     mode: "lines",
     name: `Irradiance (${arrayName})`,
     line: {
@@ -84,7 +84,7 @@ function addTrace(traces, arrayData, arrayName) {
   });
 
   const typicalOutput = arrayData.irradiance.map(
-    (irradiance) => irradiance * 0.14
+    (irradiance) => irradiance * 0.14 / 1000
   );
   traces.push({
     x: arrayData.dates,
