@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const { parse } = require("csv-parse");
-const calcSolarValues = require("./solarCalc");
+const { calcSolarValues, convertStringToID, convertIDtoString } = require("./solarCalc");
 
 admin.initializeApp();
 
@@ -76,21 +76,23 @@ exports.onFileUpload = functions
           }
 
           const date = data[dateKey].replace(/\//g, "-");
-          const year = new Date(date).getFullYear().toString();
+          const key = convertStringToID(date)
+          const year = 2000 + parseInt(key.substring(0, 2))
+          // const year = new Date(date).getFullYear().toString();
 
-          // Parse the date and format the timestamp.
-          const timestampMillis = Date.parse(date);
-          if (isNaN(timestampMillis)) {
-            console.log(`Skipping row - invalid date: ${date}`);
-            return;
-          }
+          // // Parse the date and format the timestamp.
+          // const timestampMillis = Date.parse(date);
+          // if (isNaN(timestampMillis)) {
+          //   console.log(`Skipping row - invalid date: ${date}`);
+          //   return;
+          // }
 
-          // Add the solar output data to the yearData object.
+          //Add the solar output data to the yearData object.
           if (!yearData.hasOwnProperty(year)) {
             yearData[year] = {};
           }
 
-          yearData[year][timestampMillis] = solarOutputValue;
+          yearData[year][convertIDtoString(key)] = solarOutputValue;
         });
 
         let calc;
@@ -105,13 +107,11 @@ exports.onFileUpload = functions
               Output: yearData[year],
             };
 
-            days = Object.keys(yearData[year]).map((timestamp) => {
-              let date = new Date(parseInt(timestamp));
-              return Math.floor(
-                (date - new Date(date.getFullYear(), 0, 0)) /
-                (1000 * 60 * 60 * 24)
-              );
+            days = Object.keys(yearData[year]).map((dateStr) => {
+              const id = convertStringToID(dateStr)
+              return parseInt(id.substring(2))
             });
+
             await new Promise((resolve, reject) => {
               calcSolarValues(
                 year,

@@ -24,7 +24,6 @@ const AdminGuard = ({ expectedAuth }) => {
       const userRef = doc(usersRef, auth.currentUser.uid);
 
       const userDoc = await getDoc(userRef);
-      console.log(userDoc.data());
 
       if (!userDoc.data().isAdmin) {
         notAdmin();
