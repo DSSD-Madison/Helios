@@ -49,6 +49,7 @@ export function plotPrecipData(data, selectedId) {
             r: 10,
             b: 80,
           },
+          dragmode: false
         };
 
         Plotly.newPlot(containerId, traces, layout, {

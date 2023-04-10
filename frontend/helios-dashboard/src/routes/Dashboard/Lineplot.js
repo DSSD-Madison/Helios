@@ -54,11 +54,15 @@ export function createLinePlot(data, selectedId) {
       r: 10,
       b: 0,
     },
+    dragmode: 'pan'
   };
 
   Plotly.newPlot(containerId, traces, layout, {
     responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['autoScale2d', 'select2d', 'zoom2d', 'lasso2d', 'toImage', 'pan2d'],
     displayModeBar: true,
+    scrollZoom: true
   });
 }
 
@@ -68,10 +72,10 @@ function addTrace(traces, arrayData, arrayName) {
     y: arrayData.output.map(val => val / 1000),
     mode: "lines",
     name: `Output (${arrayName})`,
-    line: {
-      shape: "spline",
-      smoothing: 1,
-    },
+    // line: {
+    //   shape: "spline",
+    //   smoothing: 0.5,
+    // },
   });
 
   traces.push({
@@ -79,10 +83,10 @@ function addTrace(traces, arrayData, arrayName) {
     y: arrayData.irradiance.map(val => val / 1000),
     mode: "lines",
     name: `Irradiance (${arrayName})`,
-    line: {
-      shape: "spline",
-      smoothing: 1,
-    },
+    // line: {
+    //   shape: "spline",
+    //   smoothing: 0.1,
+    // },
   });
 
   // const typicalOutput = arrayData.irradiance.map(

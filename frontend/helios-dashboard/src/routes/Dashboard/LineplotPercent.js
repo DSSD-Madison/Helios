@@ -23,20 +23,20 @@ export function outputIrradiancePercent(data, selectedId) {
         ),
         mode: "lines",
         name: `${arrayName} Efficiency`,
-        line: {
-          shape: "spline",
-          smoothing: 1,
-        },
+        // line: {
+        //   shape: "spline",
+        //   smoothing: 1,
+        // },
       });
       traces.push({
         x: arrayData.dates,
         y: Array(arrayData.dates.length).fill(14),
         mode: "lines",
         name: `Typical % Efficiency`,
-        line: {
-          shape: "spline",
-          smoothing: 1,
-        },
+        // line: {
+        //   shape: "spline",
+        //   smoothing: 1,
+        // },
       });
     }
   }
@@ -74,10 +74,14 @@ export function outputIrradiancePercent(data, selectedId) {
       r: 10,
       b: 80,
     },
+    dragmode: 'pan'
   };
 
   Plotly.newPlot(containerId, traces, layout, {
-    displayModeBar: true,
     responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['autoScale2d', 'select2d', 'zoom2d', 'lasso2d', 'toImage', 'pan2d'],
+    displayModeBar: true,
+    scrollZoom: true
   });
 }
