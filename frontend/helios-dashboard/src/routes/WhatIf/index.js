@@ -5,7 +5,7 @@ import BuildingChooser from "./BuildingChooser";
 import CustomBuilding from "./CustomBuilding";
 import Page from "../../layouts/Page";
 import SavingsDisplay from "./SavingsDisplay";
-import campus from "../../assets/campus.jpg";
+import campus from "../../assets/campus.jpeg";
 import { useState } from "react";
 
 const WhatIf = () => {
@@ -37,41 +37,46 @@ const WhatIf = () => {
   };
 
   return (
-    <Page title="What If?" sx={{ p: "0 !important", py: "0 !important" }}>
+    <Page
+      title="What If?"
+      sx={{ p: "0 !important", py: "0 !important", overflow: "hidden" }}
+    >
       <Box
         sx={{
-          minHeight: "100%",
-          px: [0, 5],
-          paddingTop: 15,
+          position: "absolute",
+          height: "110%",
+          width: "110%",
+          transform: "translate(-5%,-5%)",
+          zIndex: -1,
           backgroundSize: "cover",
-          background: `url(${campus}) fixed center`,
+          backgroundRepeat: "no-repeat",
+          backgroundImage: `url(${campus})`,
+          filter: "blur(5px)",
         }}
-      >
-        <Container maxWidth="md" sx={{ minHeight: "100%" }}>
-          <Paper
-            maxWidth="md"
-            elevation={5}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: ["column"],
-              minHeight: "100%",
-              p: 5,
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-            }}
+      ></Box>
+      <Container maxWidth="md" sx={{ maxHeight: "100%", overflow: "scroll" }}>
+        <Paper
+          elevation={5}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            height: "100%",
+            mx: [0, 5],
+            marginTop: 15,
+            p: 5,
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{ fontWeight: "bold", textAlign: "center" }}
           >
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{ fontWeight: "bold", textAlign: "center" }}
-            >
-              What if Campus Had More Solar?
-            </Typography>
-            <Component />
-          </Paper>
-        </Container>
-      </Box>
+            What if Campus Had More Solar?
+          </Typography>
+          <Component />
+        </Paper>
+      </Container>
     </Page>
   );
 };

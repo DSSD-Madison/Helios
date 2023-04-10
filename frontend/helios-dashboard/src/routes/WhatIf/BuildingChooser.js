@@ -21,6 +21,7 @@ const BuildingChooser = ({ onBuildingChose }) => {
           <Button
             sx={{ flexDirection: "column", textAlign: "center", mx: 1, px: 1 }}
             onClick={() => onBuildingChose(building)}
+            key={building.name}
           >
             <Avatar
               alt={`Image of ${building.name}`}

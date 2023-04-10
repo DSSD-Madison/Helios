@@ -50,6 +50,12 @@ const CustomBuilding = ({ onBuildingCreate }) => {
               >
                 Create
               </Button>
+              <Button
+                onClick={() => onBuildingCreate(null)}
+                disabled={formik.isSubmitting}
+              >
+                Go Back
+              </Button>
             </Stack>
 
             {formik.errors.submit && (
