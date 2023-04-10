@@ -43,7 +43,8 @@ export function createLinePlot(data, selectedId) {
     yaxis: {
       title: "Energy (kWh)",
       // type: "log",
-      // range: [0, 10000]
+      range: [0, 2000],
+      fixedrange: true
     },
     title: "Solar Array Output and Irradiance",
     legend: { orientation: "h", y: -0.2 },

@@ -39,7 +39,8 @@ export function plotPrecipData(data, selectedId) {
           },
           yaxis: {
             title: "Efficiency (%)",
-            range: [0, 40]
+            range: [0, 40],
+            fixedrange: true
           },
           title: "Precipitation & Efficiency Correlation",
           margin: {
