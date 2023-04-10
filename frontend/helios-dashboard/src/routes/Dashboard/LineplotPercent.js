@@ -61,6 +61,7 @@ export function outputIrradiancePercent(data, selectedId) {
     },
     yaxis: {
       title: "Efficiency (%)",
+      range: [0, 40]
     },
     title: {
       text: "Solar Array Efficiency",

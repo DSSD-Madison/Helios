@@ -41,8 +41,9 @@ export function createLinePlot(data, selectedId) {
       ],
     },
     yaxis: {
-      title: "Power (kWh) (log-scaled)",
-      type: "log"
+      title: "Energy (kWh)",
+      // type: "log",
+      // range: [0, 10000]
     },
     title: "Solar Array Output and Irradiance",
     legend: { orientation: "h", y: -0.2 },
@@ -83,17 +84,17 @@ function addTrace(traces, arrayData, arrayName) {
     },
   });
 
-  const typicalOutput = arrayData.irradiance.map(
-    (irradiance) => irradiance * 0.14 / 1000
-  );
-  traces.push({
-    x: arrayData.dates,
-    y: typicalOutput,
-    mode: "lines",
-    name: `Typical Efficiency Output (${arrayName})`,
-    line: {
-      shape: "spline",
-      smoothing: 1,
-    },
-  });
+  // const typicalOutput = arrayData.irradiance.map(
+  //   (irradiance) => irradiance * 0.14 / 1000
+  // );
+  // traces.push({
+  //   x: arrayData.dates,
+  //   y: typicalOutput,
+  //   mode: "lines",
+  //   name: `Typical Efficiency Output (${arrayName})`,
+  //   line: {
+  //     shape: "spline",
+  //     smoothing: 1,
+  //   },
+  // });
 }
