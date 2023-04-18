@@ -70,7 +70,7 @@ export default function Dashboard() {
       <Box id="precip-container" sx={{ width: "100%", height: "400px" }}></Box>
       <Paper sx={{ mt: 4, mb: 1, p: 1 }}>
         <Typography variant="h6" sx={{ mb: 0 }}>
-          Dates with NaN Irradiance:
+          Omitted Dates (due to data collection errors):
         </Typography>
         <List>
           {[...datesWithNaN].map((date, index) => (
