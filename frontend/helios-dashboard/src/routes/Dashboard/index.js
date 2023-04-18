@@ -1,6 +1,12 @@
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
+
 import Page from "../../layouts/Page";
 import SavingsBanner from "./SavingsBanner";
 import { aggregateOutputData } from "./FetchData";
@@ -12,6 +18,7 @@ export default function Dashboard() {
   const [data, setData] = useState();
   const [selectedId, setSelectedId] = useState();
   const [selectedName, setSelectedName] = useState("all");
+  const [datesWithNaN, setDatesWithNaN] = useState(new Set());
 
   useEffect(() => {
     aggregateOutputData().then((data) => {
@@ -21,8 +28,10 @@ export default function Dashboard() {
       );
       setSelectedId(selectedId_);
       createLinePlot(data, selectedId_);
-      outputIrradiancePercent(data, selectedId_);
       plotPrecipData(data, selectedId_);
+      const nanDates = outputIrradiancePercent(data, selectedId_);
+
+      setDatesWithNaN(() => new Set([...nanDates]));
     });
   }, [selectedName]);
 
@@ -59,6 +68,21 @@ export default function Dashboard() {
       ></Box>
       <Box id="plot-container" sx={{ width: "100%", height: "400px" }}></Box>
       <Box id="precip-container" sx={{ width: "100%", height: "400px" }}></Box>
+      <Paper sx={{ mt: 4, mb: 1, p: 1 }}>
+        <Typography variant="h6" sx={{ mb: 0 }}>
+          Dates with NaN Irradiance:
+        </Typography>
+        <List>
+          {[...datesWithNaN].map((date, index) => (
+            <>
+              <ListItem key={index}>
+                <ListItemText primary={new Date(date).toLocaleDateString()} />
+              </ListItem>
+              {index !== datesWithNaN.size - 1 && <Divider />}
+            </>
+          ))}
+        </List>
+      </Paper>
     </Page>
   );
 }
