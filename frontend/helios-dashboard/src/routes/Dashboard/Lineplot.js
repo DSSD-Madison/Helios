@@ -44,7 +44,7 @@ export function createLinePlot(data, selectedId) {
       title: "Energy (kWh)",
       // type: "log",
       range: [0, 2000],
-      fixedrange: true
+      fixedrange: true,
     },
     title: "Solar Array Output and Irradiance",
     legend: { orientation: "h", y: -0.2 },
@@ -54,52 +54,51 @@ export function createLinePlot(data, selectedId) {
       r: 10,
       b: 0,
     },
-    dragmode: 'pan'
+    dragmode: "pan",
   };
 
   Plotly.newPlot(containerId, traces, layout, {
     responsive: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ['autoScale2d', 'select2d', 'zoom2d', 'lasso2d', 'toImage', 'pan2d'],
+    modeBarButtonsToRemove: [
+      "autoScale2d",
+      "select2d",
+      "zoom2d",
+      "lasso2d",
+      "toImage",
+      "pan2d",
+    ],
     displayModeBar: true,
-    scrollZoom: true
+    scrollZoom: true,
   });
 }
 
 function addTrace(traces, arrayData, arrayName) {
+  const output = [];
+  const irradiance = [];
+  const irradianceDates = [];
+  const dates = [];
+
+  for (let i = 0; i < arrayData.dates.length; i++) {
+    dates.push(arrayData.dates[i]);
+    output.push(arrayData.output[i] / 1000);
+
+    if (!isNaN(arrayData.irradiance[i])) {
+      irradianceDates.push(arrayData.dates[i]);
+      irradiance.push(arrayData.irradiance[i] / 1000);
+    }
+  }
   traces.push({
-    x: arrayData.dates,
-    y: arrayData.output.map(val => val / 1000),
+    x: dates,
+    y: output,
     mode: "lines",
     name: `Output (${arrayName})`,
-    // line: {
-    //   shape: "spline",
-    //   smoothing: 0.5,
-    // },
   });
 
   traces.push({
-    x: arrayData.dates,
-    y: arrayData.irradiance.map(val => val / 1000),
+    x: irradianceDates,
+    y: irradiance,
     mode: "lines",
     name: `Irradiance (${arrayName})`,
-    // line: {
-    //   shape: "spline",
-    //   smoothing: 0.1,
-    // },
   });
-
-  // const typicalOutput = arrayData.irradiance.map(
-  //   (irradiance) => irradiance * 0.14 / 1000
-  // );
-  // traces.push({
-  //   x: arrayData.dates,
-  //   y: typicalOutput,
-  //   mode: "lines",
-  //   name: `Typical Efficiency Output (${arrayName})`,
-  //   line: {
-  //     shape: "spline",
-  //     smoothing: 1,
-  //   },
-  // });
 }
