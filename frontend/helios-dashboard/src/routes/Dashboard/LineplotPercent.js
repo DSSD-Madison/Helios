@@ -3,7 +3,7 @@ import Plotly from "plotly.js-dist";
 export function outputIrradiancePercent(data, selectedId) {
   const containerId = "plot-container-percent";
   const traces = [];
-  const datesWithNaN = new Set();
+  const datesWithNaN = new Set(); // dates with nan irradiance
   let latestDate = new Date(0);
 
   for (const [id, arrayData] of Object.entries(data)) {
