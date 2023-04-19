@@ -107,14 +107,14 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     }
     function getNextDayAndYear(day, year) {
         if (year % 4 == 0 && day == 366) {
-            return [0, year + 1]
+            return [1, parseInt(year) + 1]
         }
 
         if (day == 365) {
-            return [0, year + 1]
+            return [1, parseInt(year) + 1]
         }
 
-        return [day + 1, year]
+        return [parseInt(day) + 1, year]
     }
     function getPrevID(day, year) {
         if (day == 1 && (year - 1) % 4 == 0) {
@@ -130,7 +130,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
 
     // downloads data and calls calculate function
-    function downloadData(day, year, key) {
+    function downloadData(day, year) {
         let id = getID(day, year)
         const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
         https.get(url, (resp) => {
