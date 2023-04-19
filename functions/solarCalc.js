@@ -94,7 +94,9 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     function getID(day, year) {
         return year.toString() + day.toString().padStart(3, '0');
     }
-    function getNextID(day, year) {
+    function getNextID(d, y) {
+        let year = parseInt(y)
+        let day = parseInt(d)
         if (year % 4 == 0 && day == 366) {
             return getID(0, year + 1)
         }
@@ -105,27 +107,31 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
         return getID(day + 1, year)
     }
-    function getNextDayAndYear(day, year) {
+    function getNextDayAndYear(d, y) {
+        let year = parseInt(y)
+        let day = parseInt(d)
         if (year % 4 == 0 && day == 366) {
-            return [1, parseInt(year) + 1]
+            return [1, year + 1]
         }
 
         if (day == 365) {
-            return [1, parseInt(year) + 1]
+            return [1, year + 1]
         }
 
-        return [parseInt(day) + 1, year]
+        return [day + 1, year]
     }
-    function getPrevID(day, year) {
+    function getPrevID(d, y) {
+        let year = parseInt(y)
+        let day = parseInt(d)
         if (day == 1 && (year - 1) % 4 == 0) {
-            return getID(366, parseInt(year) - 1)
+            return getID(366, year - 1)
         }
 
         if (day == 1) {
-            return getID(365, parseInt(year) - 1)
+            return getID(365, year - 1)
         }
 
-        return getID(parseInt(day) - 1, year)
+        return getID(day - 1, year)
     }
 
 
