@@ -5,6 +5,7 @@ export function outputIrradiancePercent(data, selectedId) {
   const traces = [];
   const datesWithNaN = new Set(); // dates with nan irradiance
   let latestDate = new Date(0);
+  const allDates = [];
 
   for (const [id, arrayData] of Object.entries(data)) {
     // Update the latest date if a more recent date is found
@@ -22,7 +23,9 @@ export function outputIrradiancePercent(data, selectedId) {
       const filteredEfficiency = [];
 
       // Filter the data and store dates with NaN irradiance values
-      arrayData.dates.forEach((date, i) => {
+      for (let i = 0; i < arrayData.dates.length; i++) {
+        const date = arrayData.dates[i];
+        allDates.push(date);
         if (isNaN(arrayData.irradiance[i])) {
           // If irradiance value is NaN, store the date in datesWithNaN
           datesWithNaN.add(new Date(date).toISOString());
@@ -34,7 +37,7 @@ export function outputIrradiancePercent(data, selectedId) {
             (arrayData.output[i] / arrayData.irradiance[i]) * 100
           );
         }
-      });
+      }
       console.log(datesWithNaN);
       traces.push({
         x: filteredDates,
@@ -42,14 +45,14 @@ export function outputIrradiancePercent(data, selectedId) {
         mode: "lines",
         name: `${arrayName} Efficiency`,
       });
-      traces.push({
-        x: filteredDates,
-        y: Array(filteredDates.length).fill(14),
-        mode: "lines",
-        name: `Typical % Efficiency`,
-      });
     }
   }
+  traces.push({
+    x: allDates,
+    y: Array(allDates.length).fill(14),
+    mode: "lines",
+    name: `Typical % Efficiency`,
+  });
 
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
   let sixMonthsAgo = new Date(
