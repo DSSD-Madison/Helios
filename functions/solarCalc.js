@@ -118,14 +118,14 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     }
     function getPrevID(day, year) {
         if (day == 1 && (year - 1) % 4 == 0) {
-            return getID(366, year - 1)
+            return getID(366, parseInt(year) - 1)
         }
 
         if (day == 1) {
-            return getID(365, year - 1)
+            return getID(365, parseInt(year) - 1)
         }
 
-        return getID(day - 1, year)
+        return getID(parseInt(day) - 1, year)
     }
 
 
