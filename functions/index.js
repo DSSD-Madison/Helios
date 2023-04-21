@@ -2,7 +2,11 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const { parse } = require("csv-parse");
-const { calcSolarValues, convertStringToID, convertIDtoString } = require("./solarCalc");
+const {
+  calcSolarValues,
+  convertStringToID,
+  convertIDtoString,
+} = require("./solarCalc");
 
 admin.initializeApp();
 
@@ -20,7 +24,7 @@ const solarArraysRef = admin.firestore().collection("Solar Arrays");
 exports.onFileUpload = functions
   .runWith({
     memory: "2GB",
-    timeoutSeconds: 540
+    timeoutSeconds: 540,
   })
   .storage.object()
   .onFinalize(async (object) => {
@@ -76,8 +80,8 @@ exports.onFileUpload = functions
           }
 
           const date = data[dateKey].replace(/\//g, "-");
-          const key = convertStringToID(date)
-          const year = 2000 + parseInt(key.substring(0, 2))
+          const key = convertStringToID(date);
+          const year = 2000 + parseInt(key.substring(0, 2));
           // const year = new Date(date).getFullYear().toString();
 
           // // Parse the date and format the timestamp.
@@ -108,8 +112,8 @@ exports.onFileUpload = functions
             };
 
             days = Object.keys(yearData[year]).map((dateStr) => {
-              const id = convertStringToID(dateStr)
-              return parseInt(id.substring(2))
+              const id = convertStringToID(dateStr);
+              return parseInt(id.substring(2));
             });
 
             await new Promise((resolve, reject) => {
@@ -156,31 +160,32 @@ exports.createUserDoc = functions.auth.user().onCreate((user) => {
 
 /**
  * Cloud function that returns the total irradiance for the whole year previous to current year given the parameters and enforces AppCheck
- * 
- * @param {*} beta 
- * @param {*} gamma 
- * @param {*} rho_g 
- * @param {*} arrayarea 
+ *
+ * @param {*} beta
+ * @param {*} gamma
+ * @param {*} rho_g
+ * @param {*} arrayarea
  */
-exports.getIrradianceDataForPrevYear = functions
-  .runWith({
+exports.getIrradianceDataForPrevYear = functions /*.runWith({
     enforceAppCheck: true,
-  })
-  .https.onCall((beta, gamma, rho_g, area) => {
-    if (context.app == undefined) {
+  })*/.https
+  .onCall(({ beta, gamma, rho_g, area }, context) => {
+    /*if (context.app == undefined) {
       throw new functions.https.HttpsError(
-        'failed-precondition',
-        'The function must be called from an App Check verified app.')
-    }
+        "failed-precondition",
+        "The function must be called from an App Check verified app."
+      );
+    }*/
 
     const year = new Date().getFullYear();
 
-    const isLeapYear = (year % 4 === 0);
+    const isLeapYear = year % 4 === 0;
     const daysInYear = isLeapYear ? 366 : 365;
     const daysList = [];
     for (let i = 1; i <= daysInYear; i++) {
       daysList.push(i);
     }
+    //console.log(beta, gamma, rho_g, area);
 
     return new Promise((resolve, reject) => {
       calcSolarValues(

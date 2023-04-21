@@ -1,31 +1,58 @@
-import college_library from "../assets/college-library.jpeg";
-import memorial_library from "../assets/memorial-library.jpeg";
-import memorial_union from "../assets/memorial-union.jpeg";
+import bakke_center from "../assets/bakke-center.jpeg";
+import discovery_building from "../assets/discovery-building.jpeg";
+import kohl_center from "../assets/kohl-center.jpeg";
+import nick_center from "../assets/nick-center.jpeg";
+import pyle_center from "../assets/pyle-center.jpeg";
+import union_south from "../assets/union-south.jpeg";
 
 const buildings = [
   {
-    name: "Memorial Union",
-    beta: 0,
+    name: "Kohl Center",
+    beta: 10,
     gamma: 0,
     rho_g: 0.2,
-    area: 1000,
-    img: memorial_union,
+    area: 12649,
+    img: kohl_center,
   },
   {
-    name: "Memorial Library",
-    beta: 0,
+    name: "Bakke Center",
+    beta: 10,
     gamma: 0,
     rho_g: 0.2,
-    area: 2000,
-    img: memorial_library,
+    area: 7989,
+    img: bakke_center,
   },
   {
-    name: "College Library",
-    beta: 0,
+    name: "Pyle Center",
+    beta: 10,
     gamma: 0,
     rho_g: 0.2,
-    area: 1500,
-    img: college_library,
+    area: 3971,
+    img: pyle_center,
+  },
+  {
+    name: "Union South",
+    beta: 10,
+    gamma: 0,
+    rho_g: 0.2,
+    area: 3843,
+    img: union_south,
+  },
+  {
+    name: "Discovery Building",
+    beta: 10,
+    gamma: 0,
+    rho_g: 0.2,
+    area: 3640,
+    img: discovery_building,
+  },
+  {
+    name: "Nick Center",
+    beta: 10,
+    gamma: 0,
+    rho_g: 0.2,
+    area: 1512,
+    img: nick_center,
   },
 ];
 

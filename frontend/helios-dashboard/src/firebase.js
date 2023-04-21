@@ -1,8 +1,12 @@
 import { ReCaptchaV3Provider, initializeAppCheck } from "firebase/app-check";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  httpsCallable,
+} from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getFunctions, httpsCallable } from "firebase/functions";
 
 import { firebaseConfig } from "./config";
 import { initializeApp } from "firebase/app";
@@ -24,6 +28,7 @@ if (process.env.NODE_ENV !== "production") {
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
   connectStorageEmulator(store, "127.0.0.1", 9199);
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 } else {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(
