@@ -7,27 +7,28 @@ export function createLinePlot(data, selectedId) {
 
   let latestDate = new Date(0);
 
-  for (const [id, arrayData] of Object.entries(data)) {
-    // Update the latest date if a more recent date is found
-    const maxDateCandidate = new Date(
-      arrayData.dates[arrayData.dates.length - 1]
-    );
-    if (maxDateCandidate > latestDate) {
-      latestDate = maxDateCandidate;
-    }
-
-    if (!selectedId || (selectedId && id === selectedId)) {
-      const arrayName = arrayData.name || `Array ${id}`;
-      addTrace(traces, arrayData, arrayName);
+  if (!selectedId) {
+    const { aggregatedData, latestDate: aggregatedLatestDate } =
+      aggregateData(data);
+    addTrace(traces, aggregatedData, "Aggregated");
+    latestDate = aggregatedLatestDate;
+  } else {
+    for (const [id, arrayData] of Object.entries(data)) {
+      if (id === selectedId) {
+        const arrayName = arrayData.name || `Array ${id}`;
+        addTrace(traces, arrayData, arrayName);
+      }
     }
   }
 
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
+
   let sixMonthsAgo = new Date(
     selectedId
       ? data[selectedId].dates[data[selectedId].dates.length - 1]
       : latestDate
   );
+
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
   const layout = {
@@ -40,6 +41,7 @@ export function createLinePlot(data, selectedId) {
           : latestDate,
       ],
     },
+
     yaxis: {
       title: "Energy (kWh)",
       // type: "log",
@@ -47,7 +49,10 @@ export function createLinePlot(data, selectedId) {
       fixedrange: true,
     },
     title: "Solar Array Output and Irradiance",
-    legend: { orientation: "h", y: -0.2 },
+    legend: {
+      orientation: "h",
+      y: -0.2,
+    },
     margin: {
       t: 40,
       l: 45,
@@ -68,6 +73,7 @@ export function createLinePlot(data, selectedId) {
       "toImage",
       "pan2d",
     ],
+
     displayModeBar: true,
     scrollZoom: true,
   });
@@ -82,7 +88,6 @@ function addTrace(traces, arrayData, arrayName) {
   for (let i = 0; i < arrayData.dates.length; i++) {
     dates.push(arrayData.dates[i]);
     output.push(arrayData.output[i] / 1000);
-
     if (!isNaN(arrayData.irradiance[i])) {
       irradianceDates.push(arrayData.dates[i]);
       irradiance.push(arrayData.irradiance[i] / 1000);
@@ -101,4 +106,56 @@ function addTrace(traces, arrayData, arrayName) {
     mode: "lines",
     name: `Irradiance (${arrayName})`,
   });
+}
+
+function aggregateData(data) {
+  const aggregatedData = {
+    dates: [],
+    output: [],
+    irradiance: [],
+  };
+
+  let latestDate = new Date(0);
+  for (const arrayData of Object.values(data)) {
+    for (let i = 0; i < arrayData.dates.length; i++) {
+      const index = aggregatedData.dates.findIndex(
+        (date) => date === arrayData.dates[i]
+      );
+      if (index !== -1) {
+        aggregatedData.output[index] += arrayData.output[i];
+        aggregatedData.irradiance[index] += arrayData.irradiance[i];
+      } else {
+        aggregatedData.dates.push(arrayData.dates[i]);
+        aggregatedData.output.push(arrayData.output[i]);
+        aggregatedData.irradiance.push(arrayData.irradiance[i]);
+      }
+
+      // Update the latest date if a more recent date is found
+      const maxDateCandidate = new Date(
+        arrayData.dates[arrayData.dates.length - 1]
+      );
+      if (maxDateCandidate > latestDate) {
+        latestDate = maxDateCandidate;
+      }
+    }
+  }
+
+  // Sort aggregatedData by dates
+  const sortedIndices = aggregatedData.dates
+    .map((date, i) => i)
+    .sort(
+      (a, b) =>
+        new Date(aggregatedData.dates[a]) - new Date(aggregatedData.dates[b])
+    );
+
+  aggregatedData.dates = sortedIndices.map((i) => aggregatedData.dates[i]);
+  aggregatedData.output = sortedIndices.map((i) => aggregatedData.output[i]);
+  aggregatedData.irradiance = sortedIndices.map(
+    (i) => aggregatedData.irradiance[i]
+  );
+  console.log(latestDate);
+  return {
+    aggregatedData,
+    latestDate,
+  };
 }
