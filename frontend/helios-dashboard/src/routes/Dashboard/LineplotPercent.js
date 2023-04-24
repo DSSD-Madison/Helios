@@ -47,7 +47,6 @@ export function outputIrradiancePercent(data, selectedId) {
     },
     yaxis: {
       title: "Efficiency (%)",
-      range: [0, 40],
       fixedrange: true,
     },
     title: {
@@ -91,7 +90,7 @@ function addTrace(traces, arrayData, arrayName, allDates, datesWithNaN) {
   for (let i = 0; i < arrayData.dates.length; i++) {
     const date = arrayData.dates[i];
     allDates.push(date);
-    if (isNaN(arrayData.irradiance[i])) {
+    if (!arrayData.irradiance[i]) {
       // If irradiance value is NaN, store the date in datesWithNaN
       datesWithNaN.add(new Date(date).toISOString());
     } else {

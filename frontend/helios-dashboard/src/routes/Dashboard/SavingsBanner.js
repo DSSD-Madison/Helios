@@ -29,7 +29,7 @@ const SavingsBanner = ({ data, selectedId }) => {
 
   const getSavingsText = () => {
     if (panelName) {
-      return `The ${panelName} solar panel array has saved, to date:`;
+      return `The ${panelName} solar array has saved, to date:`;
     } else {
       return "Campus solar panels have saved, to date:";
     }

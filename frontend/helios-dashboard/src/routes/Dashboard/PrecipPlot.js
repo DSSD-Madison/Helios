@@ -19,7 +19,7 @@ export function plotPrecipData(data, selectedId) {
     const filteredEfficiency = [];
 
     for (let i = 0; i < arrayData.dates.length; i++) {
-      if (!isNaN(arrayData.irradiance[i])) {
+      if (arrayData.irradiance[i]) {
         // If irradiance value is valid, add the data to the filtered arrays
         filteredDates.push(new Date(arrayData.dates[i]));
         filteredOutput.push(arrayData.output[i]);
@@ -49,7 +49,6 @@ export function plotPrecipData(data, selectedId) {
         },
         yaxis: {
           title: "Efficiency (%)",
-          range: [0, 40],
           fixedrange: true,
         },
         title: "Precipitation & Efficiency Correlation",

@@ -44,8 +44,6 @@ export function createLinePlot(data, selectedId) {
 
     yaxis: {
       title: "Energy (kWh)",
-      // type: "log",
-      range: [0, 2000],
       fixedrange: true,
     },
     title: "Solar Array Output and Irradiance",
@@ -88,7 +86,7 @@ function addTrace(traces, arrayData, arrayName) {
   for (let i = 0; i < arrayData.dates.length; i++) {
     dates.push(arrayData.dates[i]);
     output.push(arrayData.output[i] / 1000);
-    if (!isNaN(arrayData.irradiance[i])) {
+    if (arrayData.irradiance[i]) {
       irradianceDates.push(arrayData.dates[i]);
       irradiance.push(arrayData.irradiance[i] / 1000);
     }
