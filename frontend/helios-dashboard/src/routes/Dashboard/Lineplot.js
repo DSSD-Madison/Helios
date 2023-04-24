@@ -1,31 +1,32 @@
 import Plotly from "plotly.js-dist";
 
-export function createLinePlot(data, selectedId) {
+export function createLinePlot(data, selectedIds) {
   const containerId = "plot-container";
   const traces = [];
   console.log(data);
 
   let latestDate = new Date(0);
 
-  if (!selectedId) {
-    const { aggregatedData, latestDate: aggregatedLatestDate } =
-      aggregateData(data);
-    addTrace(traces, aggregatedData, "Aggregated");
-    latestDate = aggregatedLatestDate;
-  } else {
-    for (const [id, arrayData] of Object.entries(data)) {
-      if (id === selectedId) {
-        const arrayName = arrayData.name || `Array ${id}`;
-        addTrace(traces, arrayData, arrayName);
-      }
+  for (const [id, arrayData] of Object.entries(data)) {
+    // Update the latest date if a more recent date is found
+    const maxDateCandidate = new Date(
+      arrayData.dates[arrayData.dates.length - 1]
+    );
+    if (maxDateCandidate > latestDate) {
+      latestDate = maxDateCandidate;
+    }
+
+    if (!selectedIds || (selectedIds && selectedIds.includes(id))) {
+      const arrayName = arrayData.name || `Array ${id}`;
+      addTrace(traces, arrayData, arrayName);
     }
   }
 
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
 
   let sixMonthsAgo = new Date(
-    selectedId
-      ? data[selectedId].dates[data[selectedId].dates.length - 1]
+    selectedIds && selectedIds[0]
+      ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
       : latestDate
   );
 
@@ -36,8 +37,8 @@ export function createLinePlot(data, selectedId) {
       title: "Date",
       range: [
         sixMonthsAgo,
-        selectedId
-          ? data[selectedId].dates[data[selectedId].dates.length - 1]
+        selectedIds && selectedIds[0]
+          ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
           : latestDate,
       ],
     },

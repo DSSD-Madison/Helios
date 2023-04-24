@@ -4,32 +4,28 @@ import { useEffect, useState } from "react";
 
 import SavingsFigures from "../../components/SavingsFigures";
 
-const SavingsBanner = ({ data, selectedId }) => {
+const SavingsBanner = ({ name, data, selectedIds }) => {
   const isDesktop = useMediaQuery("(min-width:600px)");
 
-  const [panelName, setPanelName] = useState();
   const [kwOutput, setKwOutput] = useState();
 
   useEffect(() => {
     if (!data) return;
-    setPanelName(null);
 
+    let kwOutput_ = 0;
     for (const [id, arrayData] of Object.entries(data)) {
-      if (selectedId && id !== selectedId) continue;
+      if (selectedIds && !selectedIds.includes(id)) continue;
 
-      let kwOutput_ = 0;
       for (let dayOutput of arrayData.output) {
         kwOutput_ += dayOutput / 1000;
       }
-
-      if (selectedId) setPanelName(arrayData.name);
-      setKwOutput(kwOutput_);
     }
-  }, [data, selectedId]);
+    setKwOutput(kwOutput_);
+  }, [data, selectedIds]);
 
   const getSavingsText = () => {
-    if (panelName) {
-      return `The ${panelName} solar array has saved, to date:`;
+    if (name && selectedIds) {
+      return `The ${name} solar panel array has saved, to date:`;
     } else {
       return "Campus solar panels have saved, to date:";
     }
