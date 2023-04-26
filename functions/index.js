@@ -21,8 +21,8 @@ const prod = process.env.NODE_ENV === "production";
  */
 exports.onFileUpload = functions
   .runWith({
-    memory: "2GB",
-    timeoutSeconds: 540
+    memory: "256MB",
+    timeoutSeconds: 60
   })
   .storage.object()
   .onFinalize(async (object) => {
@@ -167,6 +167,8 @@ exports.createUserDoc = functions.auth.user().onCreate((user) => {
 exports.getIrradianceDataForPrevYear = functions
   .runWith({
     enforceAppCheck: prod,
+    memory: "128MB",
+    timeoutSeconds: 60
   })
   .https.onCall((beta, gamma, rho_g, area) => {
     if (prod && context.app == undefined) {
@@ -194,8 +196,9 @@ exports.getIrradianceDataForPrevYear = functions
         area,
         undefined,
         (irradiance) => {
+          // console.log(irradiance);
           let result = Object.values(irradiance).reduce((a, b) => a + (Number(b) || 0), 0);
-          console.log(result);
+          // console.log(result);
           resolve(result);
         },
         (err) => reject(err)
