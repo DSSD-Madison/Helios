@@ -117,11 +117,13 @@ function aggregateData(data) {
     output: [],
     irradiance: [],
   };
+
   let latestDate = new Date(0);
   for (const arrayData of Object.values(data)) {
     for (let i = 0; i < arrayData.dates.length; i++) {
       const index = aggregatedData.dates.findIndex(
-        (date) => date === arrayData.dates[i]
+        (date) =>
+          new Date(date).getTime() === new Date(arrayData.dates[i]).getTime()
       );
       if (index !== -1) {
         aggregatedData.output[index] += arrayData.output[i];
@@ -131,6 +133,7 @@ function aggregateData(data) {
         aggregatedData.output.push(arrayData.output[i]);
         aggregatedData.irradiance.push(arrayData.irradiance[i]);
       }
+
       // Update the latest date if a more recent date is found
       const maxDateCandidate = new Date(
         arrayData.dates[arrayData.dates.length - 1]
@@ -140,6 +143,7 @@ function aggregateData(data) {
       }
     }
   }
+
   // Sort aggregatedData by dates
   const sortedIndices = aggregatedData.dates
     .map((date, i) => i)
@@ -147,6 +151,7 @@ function aggregateData(data) {
       (a, b) =>
         new Date(aggregatedData.dates[a]) - new Date(aggregatedData.dates[b])
     );
+
   aggregatedData.dates = sortedIndices.map((i) => aggregatedData.dates[i]);
   aggregatedData.output = sortedIndices.map((i) => aggregatedData.output[i]);
   aggregatedData.irradiance = sortedIndices.map(
