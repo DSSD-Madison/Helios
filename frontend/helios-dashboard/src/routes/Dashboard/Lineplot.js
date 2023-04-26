@@ -10,6 +10,7 @@ export function createLinePlot(data, selectedId) {
   if (!selectedId) {
     const { aggregatedData, latestDate: aggregatedLatestDate } =
       aggregateData(data);
+    console.log(aggregatedData);
     addTrace(traces, aggregatedData, "Aggregated");
     latestDate = aggregatedLatestDate;
   } else {
@@ -117,7 +118,8 @@ function aggregateData(data) {
   for (const arrayData of Object.values(data)) {
     for (let i = 0; i < arrayData.dates.length; i++) {
       const index = aggregatedData.dates.findIndex(
-        (date) => date === arrayData.dates[i]
+        (date) =>
+          new Date(date).getTime() === new Date(arrayData.dates[i]).getTime()
       );
       if (index !== -1) {
         aggregatedData.output[index] += arrayData.output[i];
