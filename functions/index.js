@@ -8,6 +8,8 @@ admin.initializeApp();
 
 const solarArraysRef = admin.firestore().collection("Solar Arrays");
 
+const prod = process.env.NODE_ENV === "production";
+
 /**
  * Cloud Function that reads a CSV file uploaded to Cloud Storage, parses the data, and writes the solar output data
  * to a Firestore database.
@@ -19,8 +21,8 @@ const solarArraysRef = admin.firestore().collection("Solar Arrays");
  */
 exports.onFileUpload = functions
   .runWith({
-    memory: "2GB",
-    timeoutSeconds: 540
+    memory: "256MB",
+    timeoutSeconds: 60
   })
   .storage.object()
   .onFinalize(async (object) => {
@@ -164,16 +166,18 @@ exports.createUserDoc = functions.auth.user().onCreate((user) => {
  */
 exports.getIrradianceDataForPrevYear = functions
   .runWith({
-    enforceAppCheck: true,
+    enforceAppCheck: prod,
+    memory: "128MB",
+    timeoutSeconds: 60
   })
   .https.onCall((beta, gamma, rho_g, area) => {
-    if (context.app == undefined) {
+    if (prod && context.app == undefined) {
       throw new functions.https.HttpsError(
         'failed-precondition',
         'The function must be called from an App Check verified app.')
     }
 
-    const year = new Date().getFullYear();
+    const year = new Date().getFullYear() - 1;
 
     const isLeapYear = (year % 4 === 0);
     const daysInYear = isLeapYear ? 366 : 365;
@@ -192,7 +196,10 @@ exports.getIrradianceDataForPrevYear = functions
         area,
         undefined,
         (irradiance) => {
-          resolve(irradiance.reduce((a, b) => a + b, 0));
+          // console.log(irradiance);
+          let result = Object.values(irradiance).reduce((a, b) => a + (Number(b) || 0), 0);
+          // console.log(result);
+          resolve(result);
         },
         (err) => reject(err)
       );
