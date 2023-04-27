@@ -14,22 +14,23 @@ const SavingsBanner = ({ data, selectedId }) => {
     if (!data) return;
     setPanelName(null);
 
+
+    let kwOutput_ = 0;
     for (const [id, arrayData] of Object.entries(data)) {
       if (selectedId && id !== selectedId) continue;
 
-      let kwOutput_ = 0;
       for (let dayOutput of arrayData.output) {
         kwOutput_ += dayOutput / 1000;
       }
 
       if (selectedId) setPanelName(arrayData.name);
-      setKwOutput(kwOutput_);
     }
+    setKwOutput(kwOutput_);
   }, [data, selectedId]);
 
   const getSavingsText = () => {
     if (panelName) {
-      return `The ${panelName} solar panel array has saved, to date:`;
+      return `The ${panelName} solar array has saved, to date:`;
     } else {
       return "Campus solar panels have saved, to date:";
     }

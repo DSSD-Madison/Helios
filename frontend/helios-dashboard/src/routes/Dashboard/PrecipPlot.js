@@ -4,6 +4,7 @@ import { fetchPrecipData } from "../../weatherData";
 export function plotPrecipData(data, selectedId) {
   const containerId = "precip-container";
   const traces = [];
+  const dates = [];
   // let count = 0;
 
   for (const [id, arrayData] of Object.entries(data)) {
@@ -18,13 +19,14 @@ export function plotPrecipData(data, selectedId) {
     const filteredEfficiency = [];
 
     for (let i = 0; i < arrayData.dates.length; i++) {
-      if (!isNaN(arrayData.irradiance[i])) {
+      if (arrayData.irradiance[i]) {
         // If irradiance value is valid, add the data to the filtered arrays
         filteredDates.push(new Date(arrayData.dates[i]));
         filteredOutput.push(arrayData.output[i]);
         filteredEfficiency.push(
           (arrayData.output[i] / arrayData.irradiance[i]) * 100
         );
+        dates.push(new Date(arrayData.dates[i]).toLocaleDateString());
       }
     }
 
@@ -36,6 +38,7 @@ export function plotPrecipData(data, selectedId) {
         y: filteredEfficiency,
         name: `${arrayName}`,
         mode: "markers",
+        text: dates,
         type: "scatter",
       });
 
@@ -46,7 +49,6 @@ export function plotPrecipData(data, selectedId) {
         },
         yaxis: {
           title: "Efficiency (%)",
-          range: [0, 40],
           fixedrange: true,
         },
         title: "Precipitation & Efficiency Correlation",

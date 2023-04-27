@@ -24,7 +24,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
               sx={{ fontSize: ["40px", "80px"], fontWeight: "400" }}
             />
             <Typography>
-              lb CO<sup>2</sup> Saved
+              lb CO<sub>2</sub> Saved
             </Typography>
           </Box>
         )}

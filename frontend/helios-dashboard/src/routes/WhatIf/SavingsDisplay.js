@@ -7,9 +7,10 @@ const SavingsDisplay = ({ buildingData }) => {
 
   return (
     <>
-      <Typography variant="h5" component="h2">
-        If the {buildingData.name} had solar panels on its {buildingData.area} m
-        <sup>2</sup> of roof...
+      <Typography variant="h5" component="h2" align="center">
+        If the {buildingData.name} had a {buildingData.area} m
+        <sup>2</sup> solar array on its roof, the following
+        savings would be made in {new Date().getFullYear() - 1} alone...
       </Typography>
 
       <Stack
