@@ -250,8 +250,6 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             minute_energy.push((direct_hz[i] * Rb[i] + diffuse[i] * ((1 + cosd(beta)) / 2) + rho_g * (direct_hz[i] + diffuse[i]) * (1 - cosd(beta)) / 2) / 60)
         }
 
-        console.log(minute_energy.length)
-
         total = 0
         for (let i = 0; i < minute_energy.length; i++) {
             total += minute_energy[i];
