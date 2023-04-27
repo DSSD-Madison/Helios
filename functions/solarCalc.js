@@ -250,12 +250,14 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             minute_energy.push((direct_hz[i] * Rb[i] + diffuse[i] * ((1 + cosd(beta)) / 2) + rho_g * (direct_hz[i] + diffuse[i]) * (1 - cosd(beta)) / 2) / 60)
         }
 
+        console.log(minute_energy.length)
+
         total = 0
         for (let i = 0; i < minute_energy.length; i++) {
             total += minute_energy[i];
         }
 
-        if (1366 * 60 < total) {
+        if (1366 * 24 < total) {
             return NaN
         }
         return total * arrayarea
@@ -333,7 +335,7 @@ function printError(err) {
     console.log(`Request failed: ${err}`)
 }
 days = []//1, 6, 300, 200, 24, 100, 101, 103, 230, 230]
-for (let i = 0; i < 365; i++) {
+for (let i = 0; i < 1; i++) {
     days.push(i + 1)
 }
 
