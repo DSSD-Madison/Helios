@@ -170,7 +170,7 @@ exports.getIrradianceDataForPrevYear = functions
     memory: "128MB",
     timeoutSeconds: 60
   })
-  .https.onCall((beta, gamma, rho_g, area) => {
+  .https.onCall(({ beta, gamma, rho_g, area }, context) => {
     if (prod && context.app == undefined) {
       throw new functions.https.HttpsError(
         'failed-precondition',
