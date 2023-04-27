@@ -1,19 +1,4 @@
-const https = require('node:https');
 const axios = require('axios')
-
-async function fetchWithTimeout(resource, options = {}) {
-    const { timeout = 8000 } = options;
-
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const response = await axios.get(resource, {
-        ...options,
-        signal: controller.signal
-    });
-    clearTimeout(id);
-    return response;
-
-}
 
 function convertIDtoString(id) {
     const year = parseInt(parseInt(id.slice(0, 2)) + 2000)
@@ -157,7 +142,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
     function makePromise(day, year) {
         let id = getID(day, year)
         const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
-        return fetchWithTimeout(url);
+        return axios.get(url, { timeout: 8000 });
 
     }
 
@@ -270,6 +255,9 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             total += minute_energy[i];
         }
 
+        if (1366 * 24 < total) {
+            return NaN
+        }
         return total * arrayarea
 
     }
@@ -309,13 +297,14 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
         const p = Promise.all(promises[i])
 
         p.then((values) => {
+
             if (values[0].data.length > 250000 && values[1].data.length > 250000) {
                 results[convertIDtoString(getID(listofdays[i], year))] = getSolarVal(values[0].data, values[1].data, parseInt(listofdays[i]))
             } else {
                 results[convertIDtoString(getID(listofdays[i], year))] = NaN
             }
             remaining -= 1
-            if (remaining == 0) { onAllValsCalculated(results) }
+            if (remaining == 0) { onAllValsCalculated(results); }
         }).catch((err) => {
             results[convertIDtoString(getID(listofdays[i], year))] = NaN;
             remaining -= 1
@@ -344,7 +333,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 //     console.log(`Request failed: ${err}`)
 // }
 // days = []//1, 6, 300, 200, 24, 100, 101, 103, 230, 230]
-// for (let i = 0; i < 95; i++) {
+// for (let i = 0; i < 1; i++) {
 //     days.push(i + 1)
 // }
 
