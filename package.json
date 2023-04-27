@@ -6,7 +6,8 @@
     "deploy-firestore": "firebase deploy --only firestore:rules",
     "deploy-storage": "firebase deploy --only storage",
     "dev": "concurrently \"firebase emulators:start\" \"npm run dev --prefix ./frontend/helios-dashboard\"",
-    "i-recur": "npm i && cd ./functions && npm i && cd ../frontend/helios-dashboard && npm i"
+    "i-recur": "npm i && cd ./functions && npm i && cd ../frontend/helios-dashboard && npm i",
+    "ci-recur": "npm ci && cd ./functions && npm ci && cd ../frontend/helios-dashboard && npm ci"
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
