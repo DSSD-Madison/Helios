@@ -1,13 +1,12 @@
 import Plotly from "plotly.js-dist";
 
-export function createLinePlot(data, selectedId) {
+export function createLinePlot(data, selectedIds) {
   const containerId = "plot-container";
   const traces = [];
-  console.log(data);
 
   let latestDate = new Date(0);
 
-  if (!selectedId) {
+  if (!selectedIds) {
     const { aggregatedData, latestDate: aggregatedLatestDate } =
       aggregateData(data);
     console.log(aggregatedData);
@@ -15,7 +14,7 @@ export function createLinePlot(data, selectedId) {
     latestDate = aggregatedLatestDate;
   } else {
     for (const [id, arrayData] of Object.entries(data)) {
-      if (id === selectedId) {
+      if (selectedIds.includes(id)) {
         const arrayName = arrayData.name || `Array ${id}`;
         addTrace(traces, arrayData, arrayName);
       }
@@ -25,8 +24,8 @@ export function createLinePlot(data, selectedId) {
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
 
   let sixMonthsAgo = new Date(
-    selectedId
-      ? data[selectedId].dates[data[selectedId].dates.length - 1]
+    selectedIds && selectedIds[0]
+      ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
       : latestDate
   );
 
@@ -37,8 +36,8 @@ export function createLinePlot(data, selectedId) {
       title: "Date",
       range: [
         sixMonthsAgo,
-        selectedId
-          ? data[selectedId].dates[data[selectedId].dates.length - 1]
+        selectedIds && selectedIds[0]
+          ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
           : latestDate,
       ],
     },
@@ -153,7 +152,6 @@ function aggregateData(data) {
   aggregatedData.irradiance = sortedIndices.map(
     (i) => aggregatedData.irradiance[i]
   );
-  console.log(latestDate);
   return {
     aggregatedData,
     latestDate,

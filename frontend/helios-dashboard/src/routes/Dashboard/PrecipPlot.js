@@ -1,7 +1,7 @@
 import Plotly from "plotly.js-dist";
 import { fetchPrecipData } from "../../weatherData";
 
-export function plotPrecipData(data, selectedId) {
+export function plotPrecipData(data, selectedIds) {
   const containerId = "precip-container";
   const traces = [];
   const dates = [];
@@ -9,7 +9,7 @@ export function plotPrecipData(data, selectedId) {
 
   for (const [id, arrayData] of Object.entries(data)) {
     // Skip if the ID does not match the selected ID
-    if (selectedId && id !== selectedId) {
+    if (selectedIds && !selectedIds.includes(id)) {
       continue;
     }
 

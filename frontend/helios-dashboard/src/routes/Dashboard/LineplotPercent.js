@@ -1,19 +1,19 @@
 import Plotly from "plotly.js-dist";
-export function outputIrradiancePercent(data, selectedId) {
+export function outputIrradiancePercent(data, selectedIds) {
   const containerId = "plot-container-percent";
   const traces = [];
   const datesWithNaN = new Set(); // dates with nan irradiance
   let latestDate = new Date(0);
   const allDates = [];
 
-  if (!selectedId) {
+  if (!selectedIds) {
     const { aggregatedData, latestDate: aggregatedLatestDate } =
       aggregateData(data);
     addTrace(traces, aggregatedData, "Aggregated", allDates, datesWithNaN);
     latestDate = aggregatedLatestDate;
   } else {
     for (const [id, arrayData] of Object.entries(data)) {
-      if (id === selectedId) {
+      if (selectedIds.includes(id)) {
         const arrayName = arrayData.name || `Array ${id}`;
         addTrace(traces, arrayData, arrayName, allDates, datesWithNaN);
       }
@@ -28,8 +28,8 @@ export function outputIrradiancePercent(data, selectedId) {
 
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
   let sixMonthsAgo = new Date(
-    selectedId
-      ? data[selectedId].dates[data[selectedId].dates.length - 1]
+    selectedIds && selectedIds[0]
+      ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
       : latestDate
   );
 
@@ -40,8 +40,8 @@ export function outputIrradiancePercent(data, selectedId) {
       title: "Date",
       range: [
         sixMonthsAgo,
-        selectedId
-          ? data[selectedId].dates[data[selectedId].dates.length - 1]
+        selectedIds && selectedIds[0]
+          ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
           : latestDate,
       ],
     },
@@ -102,7 +102,6 @@ function addTrace(traces, arrayData, arrayName, allDates, datesWithNaN) {
       );
     }
   }
-  console.log(datesWithNaN);
   traces.push({
     x: filteredDates,
     y: filteredEfficiency,
@@ -157,7 +156,6 @@ function aggregateData(data) {
   aggregatedData.irradiance = sortedIndices.map(
     (i) => aggregatedData.irradiance[i]
   );
-  console.log(latestDate);
   return {
     aggregatedData,
     latestDate,
