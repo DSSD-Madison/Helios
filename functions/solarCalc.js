@@ -1,35 +1,5 @@
 const axios = require('axios')
 
-function convertIDtoString(id) {
-    const year = parseInt(parseInt(id.slice(0, 2)) + 2000)
-    let day = parseInt(id.slice(2, 5))
-    if (day <= 31) {
-        return "01-" + String(day).padStart(2, '0') + "-" + year
-    }
-
-    if (year % 4 == 0) {
-        if (day <= 60) {
-            return "02-" + String(day - 31).padStart(2, '0') + '-' + year
-        }
-        day -= 1;
-    }
-
-    day -= 31;
-    months = [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    for (let i = 0; i < months.length; i++) {
-        if (day <= months[i]) {
-            return String(i + 2).padStart(2, '0') + '-' + String(day).padStart(2, '0') + '-' + year
-        }
-        day -= months[i]
-    }
-}
-
-function convertIdToString(id) {
-    return convertIDtoString(id)
-    // const date = new Date(parseInt(id.slice(0, 2)) + 2000, 0, parseInt(id.slice(2, 5)));
-    // return date.getTime()
-}
-
 // Helper math functions
 function toRadians(angle) {
     return angle * (Math.PI / 180);
@@ -48,7 +18,8 @@ function toDegrees(radians) {
     return radians * (180 / pi);
 }
 
-// Helper ID functions
+
+// Helper ID functions 
 function getID(day, year) {
     return year.toString() + day.toString().padStart(3, '0');
 }
@@ -92,6 +63,31 @@ function getPrevID(d, y) {
     return getID(day - 1, year)
 }
 
+
+// Functions to convert database IDs to NOA IDs and vice versa
+function convertIDtoString(id) {
+    const year = parseInt(parseInt(id.slice(0, 2)) + 2000)
+    let day = parseInt(id.slice(2, 5))
+    if (day <= 31) {
+        return "01-" + String(day).padStart(2, '0') + "-" + year
+    }
+
+    if (year % 4 == 0) {
+        if (day <= 60) {
+            return "02-" + String(day - 31).padStart(2, '0') + '-' + year
+        }
+        day -= 1;
+    }
+
+    day -= 31;
+    months = [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    for (let i = 0; i < months.length; i++) {
+        if (day <= months[i]) {
+            return String(i + 2).padStart(2, '0') + '-' + String(day).padStart(2, '0') + '-' + year
+        }
+        day -= months[i]
+    }
+}
 function convertStringToID(date) {
     const year = date.split('-')[2]
     let dateObj = new Date(date);
@@ -103,6 +99,14 @@ function convertStringToID(date) {
 }
 
 
+// Helper function to create a promise for 
+function makePromise(day, year) {
+    let id = getID(day, year)
+    const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
+    return axios.get(url, { timeout: 8000 });
+
+}
+
 /**
  * Computes irradiance values for a list of days in a year. Returns void, so use callback functions for control
  * @param {*} year 
@@ -111,22 +115,13 @@ function convertStringToID(date) {
  * @param {*} gamma 
  * @param {*} rho_g 
  * @param {*} arrayarea 
- * @param {*} onValCalculated when an irradiance value is calculated: onValCalculated(id, val)
  * @param {*} onAllValsCalculated when all irradiance values are calculated: onAllValsCalculated(results)
- * @param {*} onError error found when fetching data: onError(err)
- * @param {*} onRequestFulfilled a single https request was fulfilled: onRequestFulfilled(id)
  */
-async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onValCalculated, onAllValsCalculated, onError, onRequestFulfilled) {
+async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, onAllValsCalculated) {
     year = year.toString().slice(2);
-
-    // fetched data
-    let storage = {}
 
     // requests made (to avoid making duplicates)
     let requests = {}
-
-    // days that need to be calculated
-    let todo = {}
 
     // number of calculations remaining
     let remaining = 0;
@@ -136,15 +131,6 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
 
     // stores promises
     let promises = []
-
-
-    // downloads data and calls calculate function
-    function makePromise(day, year) {
-        let id = getID(day, year)
-        const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
-        return axios.get(url, { timeout: 8000 });
-
-    }
 
     // Calculates solar irradiance value
     function getSolarVal(f1, f2, n) {
@@ -272,7 +258,6 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
         let [nextDay, nextYear] = getNextDayAndYear(listofdays[i], year)
         const nextID = getID(nextDay, nextYear)
 
-        todo[currID] = true
         promises.push([])
         if (!requests[currID]) {
             const p = makePromise(listofdays[i], year)
