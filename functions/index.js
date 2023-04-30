@@ -80,14 +80,6 @@ exports.onFileUpload = functions
           const date = data[dateKey].replace(/\//g, "-");
           const key = convertStringToID(date)
           const year = 2000 + parseInt(key.substring(0, 2))
-          // const year = new Date(date).getFullYear().toString();
-
-          // // Parse the date and format the timestamp.
-          // const timestampMillis = Date.parse(date);
-          // if (isNaN(timestampMillis)) {
-          //   console.log(`Skipping row - invalid date: ${date}`);
-          //   return;
-          // }
 
           //Add the solar output data to the yearData object.
           if (!yearData.hasOwnProperty(year)) {
@@ -96,8 +88,6 @@ exports.onFileUpload = functions
 
           yearData[year][convertIDtoString(key)] = solarOutputValue;
         });
-
-        let calc;
 
         csvStream.on("end", async () => {
           const outputCollectionRef = docFileRef.collection("Output");
@@ -126,8 +116,7 @@ exports.onFileUpload = functions
                   yearDataObj.irradiance = irradianceObj;
                   batch.set(yearDocRef, yearDataObj, { merge: true });
                   resolve();
-                },
-                (err) => reject(err)
+                }
               );
             });
           }
