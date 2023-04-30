@@ -1,11 +1,12 @@
 import { Box, Typography } from "@mui/material";
+import { CO2_PER_KW, COST_PER_KW } from "../config/savings";
 
 import ShortCountUp from "./ShortCountUp";
 
-const SavingsFigures = ({ dollars, watts, co2 }) => {
+const SavingsFigures = ({ kwhOutput }) => {
   return (
     <>
-      <ShortCountUp end={dollars} delay={0}>
+      <ShortCountUp end={kwhOutput * COST_PER_KW} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -16,7 +17,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </ShortCountUp>
-      <ShortCountUp end={co2} delay={0}>
+      <ShortCountUp end={kwhOutput * CO2_PER_KW} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography
@@ -29,7 +30,7 @@ const SavingsFigures = ({ dollars, watts, co2 }) => {
           </Box>
         )}
       </ShortCountUp>
-      <ShortCountUp end={watts} delay={0}>
+      <ShortCountUp end={kwhOutput} delay={0}>
         {({ countUpRef }) => (
           <Box sx={{ textAlign: "center" }}>
             <Typography

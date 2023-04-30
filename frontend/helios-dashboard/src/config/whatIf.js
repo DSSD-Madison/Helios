@@ -5,7 +5,7 @@ import nick_center from "../assets/nick-center.jpeg";
 import pyle_center from "../assets/pyle-center.jpeg";
 import union_south from "../assets/union-south.jpeg";
 
-const buildings = [
+const BUILDINGS = [
   {
     name: "Kohl Center",
     beta: 10,
@@ -56,4 +56,6 @@ const buildings = [
   },
 ];
 
-export default buildings;
+const ESTIMATION_ARRAY_ID = "omSPZlQzgyUsRKuT9bZE";
+
+export { BUILDINGS, ESTIMATION_ARRAY_ID };

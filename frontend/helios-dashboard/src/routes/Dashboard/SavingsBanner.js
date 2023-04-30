@@ -66,11 +66,7 @@ const SavingsBanner = ({ data, selectedId }) => {
           alignItems: "center",
         }}
       >
-        <SavingsFigures
-          dollars={kwOutput * COST_PER_KW}
-          watts={kwOutput}
-          co2={kwOutput * CO2_PER_KW}
-        />
+        <SavingsFigures kwhOutput={kwOutput} />
       </Stack>
     </Box>
   );
