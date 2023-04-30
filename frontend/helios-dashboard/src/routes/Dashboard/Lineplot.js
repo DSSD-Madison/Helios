@@ -1,4 +1,5 @@
 import Plotly from "plotly.js-dist";
+import getDateRange from "./getDateRange";
 
 export function createLinePlot(data, selectedIds) {
   const containerId = "plot-container";
@@ -23,23 +24,10 @@ export function createLinePlot(data, selectedIds) {
 
   // Set sixMonthsAgo based on the latestDate (no id selected) or the latest date of the selected array
 
-  let sixMonthsAgo = new Date(
-    selectedIds && selectedIds[0]
-      ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
-      : latestDate
-  );
-
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
   const layout = {
     xaxis: {
       title: "Date",
-      range: [
-        sixMonthsAgo,
-        selectedIds && selectedIds[0]
-          ? data[selectedIds[0]].dates[data[selectedIds[0]].dates.length - 1]
-          : latestDate,
-      ],
+      range: getDateRange(data, selectedIds, latestDate),
     },
 
     yaxis: {
