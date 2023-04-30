@@ -80,14 +80,6 @@ exports.onFileUpload = functions
           const date = data[dateKey].replace(/\//g, "-");
           const key = convertStringToID(date)
           const year = 2000 + parseInt(key.substring(0, 2))
-          // const year = new Date(date).getFullYear().toString();
-
-          // // Parse the date and format the timestamp.
-          // const timestampMillis = Date.parse(date);
-          // if (isNaN(timestampMillis)) {
-          //   console.log(`Skipping row - invalid date: ${date}`);
-          //   return;
-          // }
 
           //Add the solar output data to the yearData object.
           if (!yearData.hasOwnProperty(year)) {
@@ -96,8 +88,6 @@ exports.onFileUpload = functions
 
           yearData[year][convertIDtoString(key)] = solarOutputValue;
         });
-
-        let calc;
 
         csvStream.on("end", async () => {
           const outputCollectionRef = docFileRef.collection("Output");
@@ -122,13 +112,11 @@ exports.onFileUpload = functions
                 gamma,
                 rho_g,
                 area,
-                undefined,
                 (irradianceObj) => {
                   yearDataObj.irradiance = irradianceObj;
                   batch.set(yearDocRef, yearDataObj, { merge: true });
                   resolve();
-                },
-                (err) => reject(err)
+                }
               );
             });
           }
@@ -155,53 +143,3 @@ exports.createUserDoc = functions.auth.user().onCreate((user) => {
     isAdmin: false,
   });
 });
-
-/**
- * Cloud function that returns the total irradiance for the whole year previous to current year given the parameters and enforces AppCheck
- * 
- * @param {*} beta 
- * @param {*} gamma 
- * @param {*} rho_g 
- * @param {*} arrayarea 
- */
-exports.getIrradianceDataForPrevYear = functions
-  .runWith({
-    enforceAppCheck: prod,
-    memory: "128MB",
-    timeoutSeconds: 60
-  })
-  .https.onCall(({ beta, gamma, rho_g, area }, context) => {
-    if (prod && context.app == undefined) {
-      throw new functions.https.HttpsError(
-        'failed-precondition',
-        'The function must be called from an App Check verified app.')
-    }
-
-    const year = new Date().getFullYear() - 1;
-
-    const isLeapYear = (year % 4 === 0);
-    const daysInYear = isLeapYear ? 366 : 365;
-    const daysList = [];
-    for (let i = 1; i <= daysInYear; i++) {
-      daysList.push(i);
-    }
-
-    return new Promise((resolve, reject) => {
-      calcSolarValues(
-        year,
-        daysList,
-        beta,
-        gamma,
-        rho_g,
-        area,
-        undefined,
-        (irradiance) => {
-          // console.log(irradiance);
-          let result = Object.values(irradiance).reduce((a, b) => a + (Number(b) || 0), 0);
-          // console.log(result);
-          resolve(result);
-        },
-        (err) => reject(err)
-      );
-    });
-  });
