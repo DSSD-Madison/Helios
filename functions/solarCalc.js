@@ -1,4 +1,14 @@
-const axios = require('axios')
+const axios = require('axios');
+const axiosRetry = require('axios-retry');
+const http = require('http');
+
+const instance = axios.create({
+    baseURL: 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/',
+    timeout: 10000,
+    httpAgent: new http.Agent({ keepAlive: true }),
+});
+axiosRetry(instance, { retries: 3 });
+
 
 // Helper math functions
 function toRadians(angle) {
@@ -102,8 +112,8 @@ function convertStringToID(date) {
 // Helper function to create a promise for 
 function makePromise(day, year) {
     let id = getID(day, year)
-    const url = 'https://gml.noaa.gov/aftp/data/radiation/solrad/msn/20' + year.toString() + '/msn' + id + '.dat';
-    return axios.get(url, { timeout: 8000 });
+    const url = '20' + year.toString() + '/msn' + id + '.dat';
+    return instance.get(url);
 
 }
 
@@ -291,6 +301,7 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             remaining -= 1
             if (remaining == 0) { onAllValsCalculated(results); }
         }).catch((err) => {
+            console.log(err);
             results[convertIDtoString(getID(listofdays[i], year))] = NaN;
             remaining -= 1
             if (remaining == 0) { onAllValsCalculated(results) }
