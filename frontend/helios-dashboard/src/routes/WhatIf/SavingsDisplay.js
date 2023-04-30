@@ -34,7 +34,8 @@ const SavingsDisplay = ({ buildingData }) => {
       }
     });
 
-    const estOutputPerDayMeter = estOutputTotal / estOutputDays / estPanelArea;
+    const estOutputPerDayMeter =
+      estOutputTotal / 1000 / estOutputDays / estPanelArea;
     const predictedTenYrOutput = estOutputPerDayMeter * 365 * 10 * area;
     setPredictedKwh(predictedTenYrOutput);
 
@@ -42,6 +43,7 @@ const SavingsDisplay = ({ buildingData }) => {
       estOutputDays,
       estOutputTotal,
       estPanelArea,
+      area,
       estOutputPerDayMeter,
       predictedTenYrOutput,
       estOutputTotal / estOutputDays
