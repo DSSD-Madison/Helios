@@ -22,7 +22,7 @@ const prod = process.env.NODE_ENV === "production";
 exports.onFileUpload = functions
   .runWith({
     memory: "256MB",
-    timeoutSeconds: 60
+    timeoutSeconds: 120
   })
   .storage.object()
   .onFinalize(async (object) => {
