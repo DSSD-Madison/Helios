@@ -42,7 +42,7 @@ const CustomBuilding = ({ onBuildingCreate }) => {
         {(formik) => (
           <Form>
             <Stack spacing={2} sx={{ mt: 5 }}>
-              <PanelFields formik={formik} />
+              <PanelFields formik={formik} simple={true} />
               <Button
                 type="submit"
                 variant="contained"

@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 
-import buildings from "../../config/buildings";
+import { BUILDINGS } from "../../config/whatIf";
 
 const BuildingChooser = ({ onBuildingChose }) => {
   return (
@@ -17,7 +17,7 @@ const BuildingChooser = ({ onBuildingChose }) => {
           pt: [2, 5],
         }}
       >
-        {buildings.map((building) => (
+        {BUILDINGS.map((building) => (
           <Button
             sx={{ flexDirection: "column", textAlign: "center", mx: 1, px: 1 }}
             onClick={() => onBuildingChose(building)}

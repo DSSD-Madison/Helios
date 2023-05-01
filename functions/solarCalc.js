@@ -301,7 +301,6 @@ async function calcSolarValues(year, listofdays, beta, gamma, rho_g, arrayarea, 
             remaining -= 1
             if (remaining == 0) { onAllValsCalculated(results); }
         }).catch((err) => {
-            console.log(err);
             results[convertIDtoString(getID(listofdays[i], year))] = NaN;
             remaining -= 1
             if (remaining == 0) { onAllValsCalculated(results) }
