@@ -2,7 +2,6 @@ import { ReCaptchaV3Provider, initializeAppCheck } from "firebase/app-check";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
 
 import { firebaseConfig } from "./config";
 import { initializeApp } from "firebase/app";
@@ -11,12 +10,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
-const functions = getFunctions(app);
-
-export const getIrradianceDataForPrevYear = httpsCallable(
-  functions,
-  "getIrradianceDataForPrevYear"
-);
 
 // process.env.NODE_ENV automatically defined by create-react-app:
 // https://create-react-app.dev/docs/adding-custom-environment-variables
@@ -24,7 +17,6 @@ if (process.env.NODE_ENV !== "production") {
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
   connectStorageEmulator(store, "127.0.0.1", 9199);
-  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 } else {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(
@@ -35,5 +27,3 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export { auth, db, store };
-
-// getIrradianceDataForPrevYear({ beta: 10, gamma: 0, rho_g: 0.2, area: 214.3 }).then(val => console.log(val)).catch(err => console.log(err));
