@@ -14,6 +14,7 @@ const SavingsFigures = ({ kwhOutput }) => {
               sx={{ fontSize: ["30px", "60px"], fontWeight: "400" }}
             />
             <Typography>$ Saved</Typography>
+            <Typography sx={{ fontSize: ["10px", "10px"], fontWeight: "200" }}>*based on ${COST_PER_KW} per kWh</Typography>
           </Box>
         )}
       </ShortCountUp>
@@ -24,9 +25,8 @@ const SavingsFigures = ({ kwhOutput }) => {
               ref={countUpRef}
               sx={{ fontSize: ["40px", "80px"], fontWeight: "400" }}
             />
-            <Typography>
-              lb CO<sup>2</sup> Saved
-            </Typography>
+            <Typography>lb CO<sub>2</sub> Saved</Typography>
+            <Typography sx={{ fontSize: ["10px", "10px"], fontWeight: "200" }}>*based on {CO2_PER_KW}lb CO<sub>2</sub> per kWh</Typography>
           </Box>
         )}
       </ShortCountUp>

@@ -56,6 +56,6 @@ const BUILDINGS = [
   },
 ];
 
-const ESTIMATION_ARRAY_ID = "omSPZlQzgyUsRKuT9bZE";
+const ESTIMATION_ARRAY_ID = "enjOdZmU43u4bD4jWlog"; //Gordon Pre-Expansion
 
 export { BUILDINGS, ESTIMATION_ARRAY_ID };

@@ -59,8 +59,8 @@ const SavingsDisplay = ({ buildingData }) => {
   return (
     <>
       <Typography variant="h5" component="h2" sx={{ textAlign: "center" }}>
-        If {isThe && "the"} {name} had solar panels on its {buildingData.area} m
-        <sup>2</sup> of roof, over ten years the savings would be...
+        If {isThe && "the"} {name} had a {buildingData.area} m
+        <sup>2</sup> solar array on its roof, over ten years the savings would be...
       </Typography>
 
       <Stack
