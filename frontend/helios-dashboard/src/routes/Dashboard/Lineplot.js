@@ -10,7 +10,6 @@ export function createLinePlot(data, selectedIds) {
   if (!selectedIds) {
     const { aggregatedData, latestDate: aggregatedLatestDate } =
       aggregateData(data);
-    console.log(aggregatedData);
     addTrace(traces, aggregatedData, "Aggregated");
     latestDate = aggregatedLatestDate;
   } else {

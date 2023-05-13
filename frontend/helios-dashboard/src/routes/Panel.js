@@ -30,6 +30,7 @@ import MUIDataTable from "mui-datatables";
 import Page from "../layouts/Page";
 import PanelFields from "../components/PanelFields";
 import { useConfirm } from "material-ui-confirm";
+import { keyToDateObj } from "../util/adjustDateStr";
 
 const Panel = () => {
   const { panelId } = useParams();
@@ -60,7 +61,7 @@ const Panel = () => {
     outputSnapshot.forEach((doc) => {
       const { Output: output } = doc.data();
       for (const dateStr of Object.keys(output)) {
-        dates.push(new Date(dateStr));
+        dates.push(keyToDateObj(dateStr));
       }
     });
     dates.sort((d1, d2) => d1.getTime() - d2.getTime());
@@ -75,7 +76,6 @@ const Panel = () => {
       let currentDate = dates[i] || new Date(3000, 1, 1); //pad end with extra date so final range in added to _dateRanges
       let currentZeroHourDate = zeroHourDates[i] || new Date(3000, 1, 1);
       if (currentZeroHourDate.getTime() > lastZeroHourDate.getTime() + 24 * 60 * 60 * 1000) {
-        console.log({ lastDate, currentDate });
         _dateRanges.push([startDate, lastDate]);
         startDate = currentDate;
       }

@@ -2,6 +2,8 @@ import { collection, getDocs } from "@firebase/firestore";
 
 import { db } from "../../firebase";
 
+import { keyToDateObj } from "../../util/adjustDateStr";
+
 export function aggregateOutputData() {
   return new Promise((resolve, reject) => {
     const solarArraysRef = collection(db, "Solar Arrays");
@@ -31,7 +33,7 @@ export function aggregateOutputData() {
                 const irradianceDict = outputDoc.data().irradiance;
 
                 for (const dateStr in outputDict) {
-                  const dateObj = new Date(dateStr);
+                  const dateObj = keyToDateObj(dateStr);
                   const output = outputDict[dateStr];
                   const irradiance = irradianceDict[dateStr];
 
