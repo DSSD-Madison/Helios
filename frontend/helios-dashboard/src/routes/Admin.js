@@ -7,6 +7,7 @@ import {
   Paper,
   Typography,
   useMediaQuery,
+  Link
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import {
@@ -262,6 +263,30 @@ export default function Admin() {
           options={usersOptions}
         />
       </Paper>
+      <Paper elevation={4} sx={{ marginTop: "2rem", padding: "1rem" }}>
+
+        <Typography variant="h6" sx={{ marginBottom: "1rem" }}>
+          Additional Configuration
+        </Typography>
+
+        <Typography>
+          <Link href="https://github.com/DSSD-Madison/Helios/blob/main/frontend/helios-dashboard/src/config/filterRemappings.js">
+            Combine arrays into one
+          </Link> e.g. if the array was upgraded and any of the parameters changed
+        </Typography>
+        <Typography>
+          <Link href="https://github.com/DSSD-Madison/Helios/blob/main/frontend/helios-dashboard/src/config/savings.js">
+            Update Cost/CO<sub>2</sub> per kW
+          </Link>
+        </Typography>
+        <Typography>
+          <Link href="https://github.com/DSSD-Madison/Helios/blob/main/frontend/helios-dashboard/src/config/whatIf.js">
+            Update WhatIf page
+          </Link> e.g. what arrays and their parametes, or what array to use to estimate their output
+        </Typography>
+
+      </Paper>
     </Page>
   );
 }
+
