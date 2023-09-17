@@ -20,4 +20,3 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIOS_9D435 }}'
           projectId: helios-9d435
-          entrypoint: frontend/helios-dashboard
