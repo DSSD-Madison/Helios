@@ -1,3 +1,4 @@
+//Modify these values to update the multipliers everywhere on the website
 const COST_PER_KW = 0.10;
 const CO2_PER_KW = 1.52;
 
