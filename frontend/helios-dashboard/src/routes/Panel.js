@@ -169,7 +169,7 @@ const Panel = () => {
 
   const UploadButton = () => {
     return (
-      <Tooltip title="Upload">
+      <Tooltip title="Upload data for this array. Only upload one month at a time (limit due to cost constraints)">
         <IconButton component="label">
           <input
             hidden
