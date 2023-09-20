@@ -29,12 +29,11 @@ The dev server will refresh each time you save new changes to project files.
 
 ### Deployment
 
-To deploy the frontend, change directory into [frontend/helios-dashboard](frontend/helios-dashboard) and run:
-```bash
-npm run deploy
-```
+The frontend will automatically deploy on merge into main.
 
-Likewise, to deploy the Firebase functions, change directory into [functions](functions) and run:
+Backend:
+
+To deploy the Firebase functions, change directory into [functions](functions) and run:
 ```bash
 npm run deploy
 ```
