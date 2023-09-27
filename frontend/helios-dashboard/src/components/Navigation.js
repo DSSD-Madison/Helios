@@ -20,8 +20,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import logo from "../assets/logo.png";
+import heliosLogo from "../assets/logo.png";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import dssdLogo from "../assets/dssd_logo_dark.svg"
 
 const menuOptions = [
   {
@@ -83,11 +84,23 @@ const Navigation = ({ title, ...props }) => {
             </IconButton>
           )}
 
-          <img
-            style={{ height: isDesktop ? "40px" : "30px" }}
-            src={logo}
-            alt="Helios Logo"
-          />
+          <a href="https://www.heliosuwmadison.org/" target="_blank" rel="noreferrer">
+            <img
+              style={{ height: isDesktop ? "40px" : "30px" }}
+              src={heliosLogo}
+              alt="Helios Logo"
+            />
+          </a>
+          <Typography variant="h3" sx={{ color: "#242424", paddingLeft: 1, paddingRight: 2 }}>
+            X
+          </Typography>
+          <a href="https://madison.dssdglobal.org/" target="_blank" rel="noreferrer">
+            <img
+              style={{ height: isDesktop ? "40px" : "30px" }}
+              src={dssdLogo}
+              alt="Data Science for Sustainable Development Logo"
+            />
+          </a>
           <Typography
             variant={isDesktop ? "h5" : "h6"}
             component="div"
