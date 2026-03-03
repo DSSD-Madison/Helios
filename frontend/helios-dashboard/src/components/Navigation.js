@@ -84,7 +84,7 @@ const Navigation = ({ title, ...props }) => {
             </IconButton>
           )}
 
-          <a href="https://www.heliosuwmadison.org/" target="_blank" rel="noreferrer">
+          <a href="https://heliosuwmad.org/" target="_blank" rel="noreferrer">
             <img
               style={{ height: isDesktop ? "40px" : "30px" }}
               src={heliosLogo}
